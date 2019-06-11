@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Hello SVG World</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <svg id="hello-world" xmlns="http://www.w3.org/2000/svg" width="1032" height="360" viewBox="0 0 1032 360">
+    <g><path d="M 0,120 L 24,120 24,156 48,156 48,120 72,120 72,192 48,192 48,168 24,168 24,192 0,192 z" /></g>
+    <g><path d="M 96,120 L 168,120 168,132 120,132 120,156 144,156 144,168 120,168 120,180 168,180 168,192 96,192 z" /></g>
+    <g><path d="M 192,120 L 216,120 216,180 264,180 264,192 192,192 z" /></g>
+    <g><path d="M 288,120 L 312,120 312,180 360,180 360,192 288,192 z" /></g>
+    <g><path d="M 384,120 L 456,120 456,192 384,192 z M 408,132 L 408,180 432,180 432,132 z" /></g>
+    <g><path d="M 564,120 L 588,120 588,156 600,156 600,144 612,144 612,156 624,156 624,120 648,120 648,192 624,192 624,180 612,180 612,168 600,168 600,180 588,180 588,192 564,192 z" /></g>
+    <g><path d="M 672,120 L 744,120 744,192 672,192 z M 696,132 L 696,180 720,180 720,132 z" /></g>
+    <g><path d="M 768,120 L 840,120 840,156 792,156 792,132 816,132 816,192 840,192 840,168 792,168 792,192 768,192 z" /></g>
+    <g><path d="M 864,120 L 888,120 888,180 936,180 936,192 864,192 z" /></g>
+    <g><path d="M 960,120 L 1008,120 1008,180 984,180 984,132 1032,132 1032,192 960,192 z" /></g>
+  </svg>
+
+  <svg id="heart" xmlns="http://www.w3.org/2000/svg" width="42" height="60" viewBox="0 0 42 60">
+    <g>
+      <polygon fill="#fd0050" points="6 0, 18 0, 18 6, 24 6, 24 0, 36 0, 36 6, 42 6, 42 18, 36 18, 36 24, 30 24, 30 30, 24 30, 24 36, 18 36, 18 30, 12 30, 12 24, 6 24, 6 18, 0 18, 0 6, 6 6" />
+      <rect fill="white" x="30" y="6" width="6" height="6" />
+    </g>
+  </svg>
+
+  <p>Inspired by <a href="https://twitter.com/lexaloffle/status/621795038054490112" target="_blank">this video</a>, implemented in <a href="http://www.w3.org/TR/SVG/" target="_blank">SVG</a>.</p>
+  <script>
+    void function () {
+      var paths = document.querySelectorAll('g > path')
+      var rainbow = 'rainbow'.split('')
+
+      for (var i = 0; i < paths.length; i++) {
+        var path = paths[i]
+        var parent = path.parentNode
+
+        for (var j = 0; j < rainbow.length; j++) {
+          var clone = path.cloneNode()
+          clone.classList.add(rainbow[j])
+          parent.insertBefore(clone, parent.firstElementChild)
+        }
+      }
+    }()
+  </script>
+</body>
+</html>

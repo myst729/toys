@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+  <title>Fractal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Fractal</h2>
+  <section>
+    <aside>
+      <fieldset>
+        <legend>Types</legend>
+        <label><input type="radio" name="fractal" value="mandelbrot" checked> Mandelbrot Set</label>
+        <label><input type="radio" name="fractal" value="julia"> Julia Set</label>
+        <label><input type="radio" name="fractal" value="julia3"> Triple Julia Set</label>
+      </fieldset>
+      <fieldset>
+        <legend>Iterations</legend>
+        <input type="range" min="1" max="128" step="1" value="64">
+        <span>64</span>
+      </fieldset>
+      <button>Draw</button>
+    </aside>
+    <article>
+      <canvas width="750" height="600"></canvas>
+    </article>
+  </div>
+  <script src="scripts.js"></script>
+</body>
+</html>

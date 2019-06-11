@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Search Highlight</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css">
+    <style>
+      body {
+        overflow-y: scroll;
+      }
+      div {
+        font-family: Georgia, serif;
+        width: 450px;
+        margin: 0 auto;
+      }
+      header {
+        background: white;
+        box-shadow: 0 0 15px 10px #fff;
+        margin-bottom: 10px;
+        position: sticky;
+        top: 0;
+      }
+      aside {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        grid-gap: 10px;
+        margin: 1em 0 0 !important;
+      }
+      article {
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <header class="clearfix">
+        <h1>Search Highlight</h1>
+        <aside class="form-group">
+          <input class="form-control" type="search" placeholder="Search">
+          <button class="btn btn-primary">Search</button>
+        </aside>
+      </header>
+      <article>
+        <p>Lorem ipsum dolor sit amet, ipsum deseruisse vituperata nam ad, ad nibh facilis albucius usu. Ne pri dicta simul liberavisse, mel et elitr animal efficiantur. Per in solet democritum. Ea mel integre omittam, nec omnis vidisse argumentum te. Suas laoreet recusabo mea ea, animal aliquip eripuit no mel, prima velit scribentur vis te. Scripta prodesset deterruisset ex vis, eum discere dolores ei.</p>
+        <p>Ad vix ignota tacimates hendrerit. Euismod graecis in nec. Te assum discere nec, pro ad partem antiopam iracundia. Cu sea eirmod ceteros neglegentur, vis at hinc nullam regione, qui probo fierent ad. Cu mea vitae nonumy, veniam graeci graecis eu duo, ei illud graecis vim. Per cu zril quaeque impedit, est an delicata constituto.</p>
+        <p>Nec audiam euismod consetetur ne, sed ut nostro probatus. Stet primis sed in. Eros efficiendi ei mel, eu vel alia vide dicit, iisque postulant mel cu. Ne augue noster nostrud sit.</p>
+        <p>Magna molestiae has at, vim ne wisi utroque epicurei, est at legimus constituto. Ne vim iriure repudiare, in causae inciderint eam. Ex graeci viderer denique vix, brute justo semper et sea, in mea stet etiam intellegebat. At nihil nusquam sit. Eam at ignota primis maluisset, tempor mucius voluptua vix ex, nec habeo epicuri laboramus eu. At vidit exerci convenire cum, vix amet graece eleifend at. Animal alienum eu pro, sit elit minimum eu, vix ea amet rebum simul.</p>
+        <p>Ei sensibus conceptam mediocritatem mea. Id aliquid eligendi duo, usu iudico salutandi ea. Vis harum simul eu. Has insolens prodesset intellegat at. Pri no justo eloquentiam, vel agam blandit comprehensam te, at eam facer nullam probatus. Te mel tempor singulis recteque, at singulis mediocritatem his. Reque melius molestie vix ne.</p>
+      </article>
+    </div>
+
+    <script>
+      function drill (root, text, results = []) {
+        if (root.textContent.indexOf(text) === -1) {
+          return []
+        }
+
+        root.count = 0
+        for (let i = 0; i < root.childNodes.length; i++) {
+          let node = root.childNodes[i]
+          if (node.nodeType === 1) {
+            drill(node, text, results)
+          } else if (node.nodeType === 3) {
+            let mark = node.textContent.split(text).length - 1
+            if (mark) {
+              root.count += mark
+              node.mark = mark
+              results.push(root)
+            }
+          }
+        }
+        return results
+      }
+
+      function highlight (root, text, index = 0) {
+        let parents = drill(root, text)
+        let parent
+        for (let i = 0; i < parents.length; i++) {
+          if (index < parents[i].count) {
+            parent = parents[i]
+            break
+          }
+          index -= parents[i].count
+        }
+
+        if (parent) {
+          let nodes = [...parent.childNodes]
+          let node
+          let position
+          for (let j = 0; j < nodes.length; j++) {
+            if (nodes[j].mark) {
+              if (index < nodes[j].mark) {
+                node = nodes[j]
+                position = j
+                break
+              }
+              index -= nodes[j].mark
+            }
+          }
+
+          let step = -1
+          for (let k = 0; k <= index; k++) {
+            step = node.textContent.indexOf(text, step + 1)
+          }
+
+          let before = node.textContent.slice(0, step)
+          let after = node.textContent.slice(step + text.length)
+          let identity = 'hl-' + Math.round(performance.now() * 1000)
+          let replaced = `${before}<mark id="${identity}">${text}</mark>${after}`
+
+          parent.insertAdjacentHTML('beforeend', replaced)
+          parent.removeChild(node)
+          nodes.slice(position + 1).forEach(child => {
+            parent.appendChild(child)
+          })
+
+          return identity
+        }
+      }
+
+      function scrollToView (id, padding = 0) {
+        let el = document.getElementById(id)
+        let elementTop = el.getBoundingClientRect().top
+        let scrollTop = window.scrollY
+        window.scrollTo(0, elementTop + scrollTop - padding)
+      }
+    </script>
+    <script>
+      let input = document.querySelector('input')
+      let button = document.querySelector('button')
+      let article = document.querySelector('article')
+      button.addEventListener('click', function (e) {
+        if (input.value) {
+          scrollToView(highlight(article, input.value), 120)
+        }
+      }, false)
+    </script>
+  </body>
+</html>

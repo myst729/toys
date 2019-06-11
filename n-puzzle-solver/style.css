@@ -1,0 +1,56 @@
+@font-face {
+  font-family: "Lobster";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Lobster"), url(lobster.woff) format("woff");
+}
+
+body {
+  font-family: "Lobster", serif;
+}
+
+h1 {
+  font-size: 36px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.board {
+  -webkit-user-select: none;
+  background: #34495e;
+  border-radius: 7px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.cell {
+  background: #16a085;
+  color: #ecf0f1;
+  font-size: 64px;
+  line-height: 92px;
+  text-align: center;
+  text-shadow: 0 1px 1px #2c3e50;
+  cursor: pointer;
+  height: 92px;
+  width: 92px;
+  border-radius: 5px;
+  position: absolute;
+}
+
+p {
+  text-align: center;
+}
+
+button {
+  background: #34495e;
+  color: #ecf0f1;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-family: "Lobster", serif;
+  font-size: 22px;
+  line-height: 32px;
+  height: 36px;
+  width: 120px;
+  margin: 0 5px;
+}

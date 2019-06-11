@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Clockwise Points Sorting</title>
+    <style>
+        body { font-family: Georgia, serif; font-size: 14px; }
+        .wrapper { width: 960px; margin: 0 auto; }
+        h1 { font-size: 32px; }
+        .left { float: left; width: 225px; font-family: 'Courier New', monospace; }
+        .mid { float: left; width: 125px; font-family: 'Courier New', monospace; }
+        .right { float: left; width: 602px; }
+        p { margin: 0 0 13px; }
+        p.h { height: 30px; }
+        input { width: 4em; }
+        input[type="radio"] { width: 1em; }
+        td { text-align: center; width: 4em; }
+        td:first-child { text-align: right; width: 2.5em; }
+        td:last-child { text-align: left; }
+        #result>p:first-child { color: #f00; }
+        #canvas { width: 600px; height: 600px; background: url(axis.png); border: 1px solid #aaa; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Clockwise Points Sorting</h1>
+        <div class="left">
+            <p class="h">
+                <button id="add">Add a point</button>
+                <button id="sort">Sort</button>
+            </p>
+            <table id="data">
+                <tr>
+                    <th>basic</th>
+                    <th>axis-X</th>
+                    <th>axis-Y</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="base" /></td>
+                    <td><input type="number" step="1" value="" /></td>
+                    <td><input type="number" step="1" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="base" /></td>
+                    <td><input type="number" step="1" value="" /></td>
+                    <td><input type="number" step="1" value="" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="base" /></td>
+                    <td><input type="number" step="1" value="" /></td>
+                    <td><input type="number" step="1" value="" /></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div class="mid">
+            <p class="h">&nbsp;</p>
+            <p><strong>results</strong></p>
+            <div id="result"></div>
+        </div>
+        <div class="right">
+            <canvas id="canvas" width="600" height="600"></canvas>
+        </div>
+    </div>
+
+    <script>
+        async function sleep (t) {
+          return new Promise(function(resolve) {
+            setTimeout(resolve, t)
+          })
+        }
+
+        var ctx = document.getElementById('canvas').getContext('2d');
+
+        var clockwiseSorting = function(input, basic) {
+            var base = Math.atan2(input[basic][1], input[basic][0]);
+            return input.sort(function(a, b) {
+                return Math.atan2(b[1], b[0]) - Math.atan2(a[1], a[0]) + (Math.atan2(b[1], b[0]) > base ? - 2 * Math.PI : 0) + (Math.atan2(a[1], a[0]) > base ? 2 * Math.PI : 0);
+            });
+        };
+
+        var drawLine = function(points, i) {
+            ctx.beginPath();
+            ctx.moveTo(300, 300);
+            ctx.lineTo(300 + 450 * points[i][0] / Math.sqrt(points[i][0] * points[i][0] + points[i][1] * points[i][1]), 300 - 450 * points[i][1] / Math.sqrt(points[i][0] * points[i][0] + points[i][1] * points[i][1]));
+            ctx.stroke();
+            ctx.closePath();
+            ctx.fillStyle = (i == 0 ? '#f00' : '#000');
+            ctx.fillText(i + '('+ points[i][0] +','+ points[i][1] +')', 305 + 25 * points[i][0], 305 - 25 * points[i][1]);
+            document.getElementById('result').innerHTML += '<p>' + i + ': (' + points[i].join(',') + ')</p>';
+        };
+
+        var drawPoints = async function(points) {
+            ctx.clearRect(0, 0, 600, 600);
+            ctx.font = 'bold 14px Courier New';
+            ctx.fillStyle = '#39f';
+            ctx.strokeStyle = '#39f';
+            ctx.lineWidth = 1;
+            points.forEach(function(p) {
+                ctx.beginPath();
+                ctx.arc(300 + 25 * p[0], 300 - 25 * p[1], 3, 0, Math.PI * 2, true);
+                ctx.fill();
+                ctx.closePath();
+            });
+            document.getElementById('result').innerHTML = '';
+            for(var i = 0, l = points.length; i < l; i++) {
+                drawLine(points, i);
+                await sleep(400)
+            }
+        };
+
+        document.getElementById('add').addEventListener('click', function() {
+            var newRow = document.createElement('tr');
+            newRow.innerHTML = '<td><input type="radio" name="base" /></td><td><input type="number" step="1" value="" /></td><td><input type="number" step="1" value="" /></td><td><button>X</button></td>';
+            document.getElementById('data').appendChild(newRow);
+            newRow.getElementsByTagName('button')[0].addEventListener('click', function() {
+                document.getElementById('data').removeChild(newRow);
+            }, false);
+        }, false);
+
+        document.getElementById('sort').addEventListener('click', function() {
+            var input = [];
+            var basic = 0;
+            var rows = Array.prototype.slice.call(document.getElementsByTagName('tr'), 1);
+            rows.forEach(function(e, i) {
+                var fields = e.getElementsByTagName('input');
+                input[i] = [parseInt(fields[1].value, 10), parseInt(fields[2].value, 10)];
+                if(fields[0].checked) {
+                    basic = i;
+                }
+            });
+            rows[basic].getElementsByTagName('input')[0].setAttribute('checked', 'checked');
+            drawPoints(clockwiseSorting(input, basic));
+        }, false);
+    </script>
+</body>
+</html>
