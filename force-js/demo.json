@@ -1,0 +1,24 @@
+[
+  {
+    "letter": "R",
+    "bg": "#f00"
+  }, {
+    "letter": "A",
+    "bg": "#f80"
+  }, {
+    "letter": "I",
+    "bg": "#ff0"
+  }, {
+    "letter": "N",
+    "bg": "#62d815"
+  }, {
+    "letter": "B",
+    "bg": "#00eaf8"
+  }, {
+    "letter": "O",
+    "bg": "#000490"
+  }, {
+    "letter": "W",
+    "bg": "#f100c3"
+  }
+]
