@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AJAX Image Upload and Preview</title>
+  <style>
+    span { font-family: monospace; }
+    div { height: 600px; width: 800px; }
+    img { max-height: 100%; max-width: 100%; }
+    .show { display: block; }
+    .hide { display: none; }
+  </style>
+</head>
+<body>
+  <p>
+    <input type="file" id="file">
+    <input type="text" id="rename" placeholder="Rename...">
+    <button>Upload Image</button>
+  </p>
+  <p id="indicator" class="hide">
+    <progress min="0" max="100" value="0"></progress>
+    <span>0%</span>
+  </p>
+  <div class="hide"></div>
+  <script>
+    var file = document.querySelector('#file')
+    var rename = document.querySelector('#rename')
+    var button = document.querySelector('button')
+    var progress = document.querySelector('progress')
+    var span = document.querySelector('span')
+    var indicator = document.querySelector('#indicator')
+    var image = document.querySelector('div')
+
+    button.onclick = () => {
+      var fd = new FormData()
+      fd.append('file', file.files[0])
+      fd.append('rename', rename.value)
+
+      var xhr = new XMLHttpRequest()
+      xhr.open('post', '/upload', true)
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          progress.value = (e.loaded / e.total) * 100
+          span.textContent = Math.round(progress.value) + '%'
+        }
+      }
+
+      xhr.onload = (e) => {
+        image.innerHTML = `<img src="/image?name=${xhr.response}">`
+        image.className = 'show'
+        indicator.className = 'hide'
+      }
+
+      xhr.send(fd)
+      image.className = 'hide'
+      indicator.className = 'show'
+    }
+  </script>
+</body>
+</html>

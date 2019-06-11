@@ -1,0 +1,17 @@
+{
+  "name": "ajax-upload",
+  "version": "1.0.0",
+  "description": "Play with AJAX file upload",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Leo",
+  "license": "ISC",
+  "dependencies": {
+    "formidable": "^1.0.17",
+    "mmmagic": "^0.4.5"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "texas",
+  "version": "1.0.0",
+  "description": "A terminal calculator for Texas Hold'em",
+  "author": "Leo",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "draw": "node --experimental-modules index.js"
+  }
+}
