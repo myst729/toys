@@ -2,6 +2,7 @@
 
 - [15-puzzle](https://myst729.github.io/toys/15-puzzle/)
 - [a-star-pathfinding](https://myst729.github.io/toys/a-star-pathfinding/)
+- [ajax-upload](https://myst729.github.io/toys/ajax-upload/)
 - [bezier-curve](https://myst729.github.io/toys/bezier-curve/)
 - [clockwise-points-sorting](https://myst729.github.io/toys/clockwise-points-sorting/)
 - [favatar](https://myst729.github.io/toys/favatar/)
@@ -12,6 +13,7 @@
 - [hello-svg-world](https://myst729.github.io/toys/hello-svg-world/)
 - [jukebox](https://myst729.github.io/toys/jukebox/)
 - [langton-s-ant](https://myst729.github.io/toys/langton-s-ant/)
+- [markdown](https://myst729.github.io/toys/markdown/)
 - [n-puzzle-solver](https://myst729.github.io/toys/n-puzzle-solver/)
 - [point-in-polygon-algorithms](https://myst729.github.io/toys/point-in-polygon-algorithms/)
 - [search-highlight](https://myst729.github.io/toys/search-highlight/)
@@ -19,4 +21,5 @@
 - [sorting-algorithms](https://myst729.github.io/toys/sorting-algorithms/)
 - [step-js](https://myst729.github.io/toys/step-js/)
 - [string-search-algorithms](https://myst729.github.io/toys/string-search-algorithms/)
+- [texas](https://myst729.github.io/toys/texas/)
 - [wecall](https://myst729.github.io/toys/wecall/)
