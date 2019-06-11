@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Top 10 Quotes</title>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css">
+    <style>
+      body {
+        overflow-y: scroll;
+      }
+      #app {
+        font-family: Georgia, serif;
+        width: 600px;
+        margin: 0 auto;
+      }
+      .search {
+        margin-bottom: 1em;
+      }
+      .item {
+        padding: .85em;
+        font-size: 1.25em;
+        display: flex;
+      }
+      .serial {
+        padding-right: 16px;
+      }
+      .serial-number {
+        background: #39f;
+        border-radius: 50%;
+        color: #fff;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        display: block;
+        text-align: center;
+      }
+      .content {
+        flex-grow: 1;
+      }
+      .author {
+        display: block;
+        font-size: .8em;
+        font-weight: 700;
+        text-align: right;
+        margin-top: .85em;
+      }
+      .author:before {
+        content: '— ';
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1>Top 10 Quotes</h1>
+      <div class="search">
+        <input class="form-control" type="search" placeholder="Search" v-model="keyword">
+        <p v-show="keyword">Mathed results: {{ matched.length }}</p>
+      </div>
+      <div class="quotes">
+        <div class="item" v-for="item in matched">
+          <div class="serial">
+            <span class="serial-number">{{ item.id }}</span>
+          </div>
+          <div class="content">
+            <span v-html="keyword ? highlight(item.quote, keyword) : item.quote"></span>
+            <cite class="author" v-html="keyword ? highlight(item.author, keyword) : item.author"></cite>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="//cdn.jsdelivr.net/npm/lunr@2.1.5/lunr.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.min.js"></script>
+    <script>
+      let quotes = [
+        {
+          id: '1',
+          quote: 'The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.',
+          author: 'Helen Keller'
+        },
+        {
+          id: '2',
+          quote: 'Keep love in your heart. A life without it is like a sunless garden when the flowers are dead.',
+          author: 'Oscar Wilde'
+        },
+        {
+          id: '3',
+          quote: 'It is during our darkest moments that we must focus to see the light.',
+          author: 'Aristotle'
+        },
+        {
+          id: '4',
+          quote: 'Try to be a rainbow in someone’s cloud.',
+          author: 'Maya Angelou'
+        },
+        {
+          id: '5',
+          quote: 'Find a place inside where there’s joy, and the joy will burn out the pain.',
+          author: 'Joseph Campbell'
+        },
+        {
+          id: '6',
+          quote: 'Nothing is impossible, the word itself says “I’m possible”!',
+          author: 'Audrey Hepburn'
+        },
+        {
+          id: '7',
+          quote: 'Don’t judge each day by the harvest you reap but by the seeds that you plant.',
+          author: 'Robert Louis Stevenson'
+        },
+        {
+          id: '8',
+          quote: 'Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.',
+          author: 'Buddha'
+        },
+        {
+          id: '9',
+          quote: 'The only thing necessary for the triumph of evil is for good men to do nothing.',
+          author: 'Edmund Burke'
+        },
+        {
+          id: '10',
+          quote: 'One of the most beautiful qualities of true friendship is to understand and to be understood.',
+          author: 'Lucius Annaeus Seneca'
+        }
+      ]
+
+      let idx = lunr(function () {
+        this.field('quote')
+        this.field('author')
+        quotes.forEach(item => this.add(item))
+      })
+
+      new Vue({
+        el: '#app',
+        data: {
+          keyword: ''
+        },
+        computed: {
+          matched () {
+            if (this.keyword) {
+              let matches = idx.search(this.keyword).map(match => match.ref)
+              return quotes.filter(item => matches.indexOf(item.id) > -1)
+            }
+            return quotes
+          }
+        },
+        methods: {
+          highlight (content, keyword) {
+            return content.replace(new RegExp(keyword, 'gi'), match => `<mark>${match}</mark>`)
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

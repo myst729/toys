@@ -1,0 +1,70 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #ccc;
+  height: 100%;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  -webkit-user-select: none;
+}
+
+aside {
+  background: #f0f0f0;
+  padding: 0 20px;
+  height: 100%;
+  width: 150px;
+  float: left;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+label {
+  color: #000;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+input {
+  margin: 5px 0 10px;
+  width: 140px;
+  display: block;
+}
+
+input[type=checkbox] {
+  margin: 5px 5px 10px 0;
+  width: auto;
+  display: inline-block;
+}
+
+select {
+  margin: 5px 0 10px;
+  width: 142px;
+  display: block;
+}
+
+button {
+  font-family: Georgia, serif;
+  font-size: 16px;
+  margin: 5px 0 10px;
+  width: 142px;
+  display: block;
+}
+
+section {
+  padding-left: 200px;
+}
+
+h2 {
+  margin: 0;
+  padding: 10px;
+  font-size: 32px;
+  text-align: center;
+}
+
+canvas {
+  margin: 10px auto;
+  background: #111;
+  display: block;
+}

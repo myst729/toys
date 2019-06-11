@@ -1,0 +1,98 @@
+*,
+:before,
+:after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: 'PT Serif', serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+h1 {
+  position: fixed;
+  top: 0;
+  left: 100px;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+}
+
+textarea {
+  font-family: Menlo, monospace;
+  font-size: 12px;
+  height: 300px;
+  width: 500px;
+  margin-top: 50px;
+  resize: none;
+}
+
+svg {
+  width: 600px;
+  height: 400px;
+}
+
+svg * {
+  stroke-width: 1;
+  stroke: #ddd;
+  transition: all .3s ease;
+}
+
+text {
+  fill: #666;
+  font-size: 12px;
+  stroke: none;
+  alignment-baseline: middle;
+  text-anchor: middle;
+}
+
+.y-line text {
+  text-anchor: end;
+}
+
+.m-line {
+  stroke: #bdf;
+}
+
+path {
+  fill: none;
+  stroke: red;
+}
+
+circle {
+  cursor: pointer;
+  fill: transparent;
+  stroke: #39f;
+  r: 3;
+}
+
+circle:hover {
+  r: 4;
+}
+
+rect {
+  fill: #def;
+  stroke: #39f;
+}
+
+.v-point rect,
+.v-point text {
+  opacity: 0;
+}
+
+circle:hover ~ * {
+  opacity: 1;
+}

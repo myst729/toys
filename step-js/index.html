@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>step.js - a JavaScript Promise implementation</title>
+    <style>
+      h1 { font-family: Georgia, serif; }
+      div { border: 1px solid #ccc; padding: 10px; }
+      p { font-family: monospace; margin: 5px; }
+    </style>
+  </head>
+  <body>
+    <h1>step.js - a JavaScript Promise implementation</h1>
+    <p>
+      <button id="single1">Natural Numbers</button>
+      <button id="single2">Square of Natural Numbers</button>
+      <button id="multiple">Fibonacci Sequence</button>
+    </p>
+    <div id="output"></div>
+    <script src="step.js"></script>
+    <script>
+      var single1 = document.getElementById("single1");
+      var single2 = document.getElementById("single2");
+      var multiple = document.getElementById("multiple");
+      var output = document.getElementById("output");
+
+      function init() {
+        var step = new Step();
+        var args = arguments;
+        setTimeout(function() {
+          step.resolve.apply(step, args);
+        }, Math.random() * 500);
+        return step;
+      }
+
+      function natural(prefix, n) {
+        var nextStep = this.nextStep;
+        setTimeout(function() {
+          output.innerHTML += "<p><strong>" + prefix + "</strong>" + n + "</p>";
+          n++;
+          nextStep.resolve(prefix, n);
+        }, Math.random() * 500);
+      }
+
+      function square(prefix, n) {
+        var nextStep = this.nextStep;
+        setTimeout(function() {
+          output.innerHTML += "<p><strong>" + prefix + "</strong>" + n + "<sup>2</sup> = " + (n * n) + "</p>";
+          n++;
+          nextStep.resolve(prefix, n);
+        }, Math.random() * 500);
+      }
+
+      function fibonacci(prefix, a, b) {
+        var nextStep = this.nextStep;
+        setTimeout(function() {
+          if(a === 1 && b === 1) {
+            output.innerHTML += "<p><strong>" + prefix + "</strong>" + a + "</p>";
+            output.innerHTML += "<p><strong>" + prefix + "</strong>" + b + "</p>";
+          }
+          output.innerHTML += "<p><strong>" + prefix + "</strong>" + (a + b) + "</p>";
+          nextStep.resolve(prefix, b, a + b);
+        }, Math.random() * 500);
+      }
+
+      single1.addEventListener("click", function(e) {
+        output.innerHTML = "";
+        init("Natural: ", 1).then(natural).then(natural).then(natural).then(natural).then(natural).then(natural).then(natural).then(natural).then(natural);
+      }, false);
+
+      single2.addEventListener("click", function(e) {
+        output.innerHTML = "";
+        (new Step()).when(init("Square: ", 1)).then(square).then(square).then(square).then(square).then(square).then(square).then(square).then(square).then(square);
+      }, false);
+
+      multiple.addEventListener("click", function(e) {
+        output.innerHTML = "";
+        (new Step()).when(init("Fibonacci: "), init(1, 1)).then(fibonacci).then(fibonacci).then(fibonacci).then(fibonacci).then(fibonacci).then(fibonacci).then(fibonacci).then(fibonacci).then(fibonacci);
+      }, false);
+    </script>
+  </body>
+</html>

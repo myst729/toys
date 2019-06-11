@@ -1,0 +1,182 @@
+@font-face {
+    font-family: 'Chicle';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Chicle Regular'), local('Chicle-Regular'), url('fonts/chicle.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Questrial';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Questrial'), local('Questrial-Regular'), url('fonts/questrial.woff') format('woff');
+}
+
+body {
+    border: 0 none;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    width: 960px;
+    margin: 0 auto;
+    border-bottom: 1px solid #ddd;
+    line-height: 2;
+    font-family: Chicle, cursive;
+    font-size: 36px;
+}
+
+h3 {
+    width: 960px;
+    margin: 0 auto;
+    border-top: 1px solid #ddd;
+    line-height: 2;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    font-weight: normal;
+    text-align: right;
+}
+
+#content {
+    width: 960px;
+    height: 500px;
+    margin: 15px auto;
+}
+
+#preview {
+    float: left;
+    width: 500px;
+    height: 500px;
+    background: #84d0f0;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+#preview>canvas {
+    width: 500px;
+    height: 500px;
+}
+
+#preview>img {
+    display: block;
+    width: 500px;
+    height: 500px;
+    margin: 0;
+    border: 0 none;
+    padding: 0;
+    -webkit-user-select: none;
+    user-select: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#preview>a {
+    display: block;
+    height: 30px;
+    width: 100px;
+    margin: 0;
+    background: #f3a637;
+    background: -webkit-linear-gradient(top, #fbc357, #ea8615);
+    border: 1px solid #ea8615;
+    border-color: #fbc357 #e5a65f #ea8615;
+    border-radius: 15px;
+    box-shadow: 0 1px 1px #aaa, inset 0 1px 0 #fbc357;
+    cursor: pointer;
+    color: #fff;
+    font-family: Questrial, sans-serif;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    line-height: 30px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 #777;
+    -webkit-user-select: none;
+    user-select: none;
+    position: absolute;
+    left: 200px;
+    top: 510px;
+    z-index: 9000;
+    -webkit-transition: top 300ms ease-in-out;
+    -webkit-transform: translateX(0);
+}
+
+#preview:hover>a {
+    top: 460px;
+}
+
+#preview>a:hover {
+    background: #f8c448;
+    background: -webkit-linear-gradient(top, #fddd7a, #f4b01f);
+}
+
+#preview>a:active {
+    -webkit-transform: translateY(2px);
+}
+
+#categories {
+    float: right;
+    width: 120px;
+    height: 500px;
+}
+
+#categories>span {
+    display: block;
+    height: 24px;
+    width: 120px;
+    margin: 5px 0 7px 0;
+    background: #b9b8ba;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #fff;
+    font-family: Questrial, sans-serif;
+    font-size: 14px;
+    text-align: center;
+    line-height: 24px;
+    text-transform: uppercase;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#categories>span:hover {
+    background: #000;
+}
+
+#categories>span:active,
+#categories>span.active,
+#categories>span.active:hover {
+    background: #f38;
+}
+
+#components {
+    float: right;
+    width: 320px;
+    height: 500px;
+}
+
+#components>img {
+    float: left;
+    display: block;
+    width: 90px;
+    height: 90px;
+    margin: 0 5px 5px 0;
+    border: 5px solid #fff;
+    border-radius: 5px;
+    background: #84d0f0;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#components>img:hover {
+    border: 5px solid #39f;
+}
+
+#components>img:active,
+#components>img.active,
+#components>img.active:hover {
+    border: 5px solid #f38;
+}

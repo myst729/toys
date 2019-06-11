@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>front.js</title>
+    <style>
+      body { font-family: Georgia, serif; }
+      h2, h3, p, div, ul { margin: 10px; padding: 0; overflow: hidden; }
+      .person { border: 1px solid #ccc; margin: 5px; padding: 5px 10px; width: 200px; float: left; }
+    </style>
+  </head>
+  <body>
+
+    <h2>demo 1: simple</h2>
+    <div id="target1"></div>
+    <h2>demo 2: auto iteration</h2>
+    <ul id="target2"></ul>
+    <h2>demo 3: logic and deep structure</h2>
+    <ul id="target3"></ul>
+
+    <script type="text/template" id="template3">
+      <li class="person">
+        <h3>{{name}}</h3>
+        @if{{info.age}}
+        <p>Age: {{info.age}}</p>
+        @endif
+        @if{{info.sex}}
+        <p>Age: {{info.sex}}</p>
+        @endif
+        @if{{info.job.fulltime}}
+        <p>Fulltime: {{info.job.fulltime}}</p>
+        @else
+        <p>Available for hire</p>
+        @endif
+        @if{{info.job.parttime}}
+        <p>Parttime: {{info.job.parttime}}</p>
+        @endif
+      </li>
+    </script>
+
+    <script src="front.min.js"></script>
+    <script>
+      var source1 = {name: "Leo", age: 33, sex: 'male', job: "Web Developer"};
+      var target1 = document.getElementById("target1");
+      var template1 = '<div class="person"><h3>{{name}}</h3><p>Age: {{age}}</p><p>Sex: {{sex}}</p><p>Job: {{job}}</p></div>';
+      target1.innerHTML = front(template1, source1);
+
+      var source2 = [{name: "Bob", age: 24, sex: "male"}, {name: "Nick", age: 0, sex: "male"}, {name: "Jane", age: 25, sex: "female"}];
+      var target2 = document.getElementById("target2");
+      var template2 = '<li class="person"><h3>{{name}}</h3><p>Age: {{age}}</p><p>Sex: {{sex}}</p></li>';
+      front(template2, source2, target2);
+
+      var source3 = [{name: "Gary", info: {age: 24, sex: "male", job: {fulltime: 'Web Developer', parttime: 'Translator'}}}, {name: "Fred", info: {age: 27, sex: "male"}}, {name: "Sarah", info: {age: 25, sex: "female", job: {fulltime: 'Designer'}}}];
+      var target3 = document.getElementById("target3");
+      var template3 = document.getElementById("template3").innerHTML;
+      front(template3, source3, target3);
+    </script>
+  </body>
+</html>

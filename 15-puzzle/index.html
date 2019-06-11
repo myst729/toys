@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes" />
+    <title>15 Puzzle</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>15 Puzzle</h1>
+    <div id="puzzle"></div>
+    <p>
+      <button id="shuffle">Shuffle</button>
+    </p>
+    <script src="puzzle.js"></script>
+    <script>
+      var puzzle = new Puzzle(document.getElementById("puzzle"));
+      document.getElementById("shuffle").addEventListener("click", puzzle.shuffleCells.bind(puzzle), false);
+    </script>
+  </body>
+</html>

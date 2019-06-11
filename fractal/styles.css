@@ -1,0 +1,27 @@
+body {
+  font-family: sans-serif;
+}
+
+section {
+  display: flex;
+}
+
+aside {
+  width: 200px;
+}
+
+fieldset {
+  margin-bottom: .5em;
+}
+
+legend {
+  padding: 0 .5em;
+}
+
+label {
+  display: block;
+}
+
+article {
+  padding: .6em 0 0 1em;
+}
