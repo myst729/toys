@@ -43,7 +43,7 @@ void function(window, document, undefined) {
       // The callback should return an object with several methods.
       modules[id] = callback.apply(null, dependencies);
       // Remove the callback from sequence.
-      delete(callbacks[id]);
+      delete callbacks[id];
     }
 
     // Iterate the callbacks sequence to see whether any callback meets the condition to run.
@@ -68,7 +68,7 @@ void function(window, document, undefined) {
         // Require modules in order to execute a callback.
         callbacks[key][1].apply(null, deps);
         // Remove the callback from sequence.
-        delete(callbacks[key]);
+        delete callbacks[key];
       }
     }
   }
