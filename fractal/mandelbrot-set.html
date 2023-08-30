@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+  <title>Mandelbrot Set</title>
+  <style>
+    body { font-family: monospace; }
+    div { width: 1000px; margin: 20px; }
+    section { position: relative; }
+    canvas { background-color: lightgray; }
+    span { display: inline-block; width: 120px; font-size: 18px; }
+    input { width: 320px; cursor: pointer; }
+    button { width: 110px; height: 32px; cursor: pointer; }
+    #frame { position: absolute; top: 0; left: 0; z-index: 100; padding: 5px; background-color:lightblue; width: 44px; text-align: center; }
+    p { display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Mandelbrot Set</h1>
+    <section>
+      <span id="frame"></span>
+      <canvas id="canvas" width="1000" height="750"></canvas>
+    </section>
+    <p>
+      <label>
+        <span>Level (64)</span>
+        <input type="range" id="level" value="64" min="1" max="128" step="1" />
+      </label>
+      <button id="play">Animation</button>
+    </p>
+  </div>
+  <script>
+    ((win, doc, undef) => {
+      const ZOOM = 250
+      const OFFSET = [-2.5, -1.5]
+      const frame = doc.getElementById('frame')
+      const level = doc.getElementById('level')
+      const play = doc.getElementById('play')
+      const canvas = doc.getElementById('canvas')
+      const context = canvas.getContext('2d')
+      const width = canvas.width
+      const height = canvas.height
+      const imageDataCache = {}
+
+      // f(z) = z^2 + c
+      function mandelbrot (zx, zyi, cx, cyi, now, max) {
+        if ((now >= max) || (zx * zx + zyi * zyi > 8)) {
+          return now
+        }
+        return mandelbrot(zx * zx - zyi * zyi + cx, zx * zyi * 2 + cyi, cx, cyi, now + 1, max)
+      }
+
+      function generatePalette (max) {
+        const palette = [[0, 0, 0]]
+        let red = 16
+        let green = 16
+        let blue = 20
+
+        for (let i = 0; i < max; i++) {
+          if (i < max / 3) {
+            red += Math.abs(3 * 256 / max)
+          } else if (i < max / 2) {
+            green += Math.abs(6 * 256 / max)
+          } else if (i < max) {
+            blue += Math.abs(2 * 256 / max)
+          }
+          palette.push([red, green, blue])
+        }
+        return palette
+      }
+
+      function generateImageData (max) {
+        const palette = generatePalette(max)
+        const imageData = context.createImageData(width, height)
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const i = (y * width + x) * 4
+            const l = mandelbrot(0, 0, x / ZOOM + OFFSET[0], y / ZOOM + OFFSET[1], 1, max)
+            imageData.data[i] = palette[l][0]
+            imageData.data[i + 1] = palette[l][1]
+            imageData.data[i + 2] = palette[l][2]
+            imageData.data[i + 3] = 255
+          }
+        }
+        return imageData
+      }
+
+      function drawImage (iteration) {
+        const l = iteration || +level.value
+        if (!imageDataCache[l]) {
+          imageDataCache[l] = generateImageData(l)
+        }
+        context.putImageData(imageDataCache[l], 0, 0)
+        frame.textContent = l
+      }
+
+      async function delay (ms) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms)
+        })
+      }
+
+      async function drawImageAnimation () {
+        const l = +level.value
+        for (let i = 1; i <= l; i++) {
+          drawImage(i)
+          await delay(30)
+        }
+      }
+
+      level.addEventListener('input', () => {
+        level.previousElementSibling.textContent = `Level (${level.value})`
+        drawImage()
+      }, false)
+      play.addEventListener('click', drawImageAnimation, false)
+      win.addEventListener('load', () => drawImage(), false)
+    })(window, document)
+  </script>
+</body>
+</html>
