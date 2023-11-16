@@ -19,6 +19,7 @@ export const suits = {
 }
 
 export const points = {
+  1: 'A',
   2: '2',
   3: '3',
   4: '4',
@@ -34,4 +35,4 @@ export const points = {
   14: 'A'
 }
 
-export default Object.keys(suits).flatMap(s => Object.keys(points).map(p => [+s, +p]))
+export default Object.keys(suits).flatMap(suit => Object.keys(points).map(point => [+suit, +point]))
