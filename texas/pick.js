@@ -43,7 +43,7 @@ function detectStraightFlush (cards) {
       grade = 8
       score = straight.score + 4 * Math.pow(100, 5)
     }
-    return { best: cards, grade, score }
+    return { best: cards, grade, score, extra: 5 - cards[0][0] }
   }
 
   return null
@@ -66,7 +66,7 @@ function detectFour (cards) {
 
   if (four.length === 1) {
     let score = 7 * Math.pow(100, 5) + four[0] * Math.pow(100, 4) + single[0]
-    return { best: cards, grade: 7, score }
+    return { best: cards, grade: 7, score, extra: 0 }
   }
 
   return null
@@ -89,7 +89,7 @@ function detectFullhouse(cards) {
 
   if (triple.length === 1 && double.length === 1) {
     let score = 6 * Math.pow(100, 5) + triple[0] * Math.pow(100, 4) + double[0] * Math.pow(100, 3)
-    return { best: cards, grade: 6, score }
+    return { best: cards, grade: 6, score, extra: 0 }
   }
 
   return null
@@ -98,14 +98,14 @@ function detectFullhouse(cards) {
 // (Grade 5) Flush 同花
 function detectFlush (cards) {
   let hash = hashSuits(cards)
-  let single = cards.map(([s, p]) => p).sort((a, b) => a - b)
+  let single = cards.map(card => card[1]).sort((a, b) => a - b)
   let score = 5 * Math.pow(100, 5)
 
   if (Object.keys(hash).length === 1) {
     single.forEach(function (point, i) {
       score += point * Math.pow(100, i)
     })
-    return { best: cards, grade: 5, score }
+    return { best: cards, grade: 5, score, extra: 5 - cards[0][0] }
   }
 
   return null
@@ -113,21 +113,21 @@ function detectFlush (cards) {
 
 // (Grade 4) Straight 顺子
 function detectStraight (cards) {
-  let single = cards.map(card => card[1]).sort((a, b) => a - b)
+  let single = [...cards]
 
   // use Ace (14) as 1
-  if (single[0] === 2 && single[4] === 14) {
+  if (single[0][1] === 2 && single[4][1] === 14) {
+    single.unshift([single[4][0], 1])
     single.pop()
-    single.unshift(1)
   }
 
   for (let i = 1; i < single.length; i++) {
-    if (single[i] - single[i - 1] !== 1) {
+    if (single[i][1] - single[i - 1][1] !== 1) {
       return null
     }
   }
-
-  return { best: cards, grade: 4, score: 4 * Math.pow(100, 5) + single[0] }
+  cards = single
+  return { best: cards, grade: 4, score: 4 * Math.pow(100, 5) + single[0][1], extra: 5 - single[4][0] }
 }
 
 // (Grade 3) Three of a Kind 三条
@@ -135,12 +135,13 @@ function detectStraight (cards) {
 // (Grade 1) One Pair 一对
 // (Grade 0) Highcard 高牌
 function detectLowValues (cards) {
-  var hash = hashPoints(cards)
-  var triple = []
-  var double = []
-  var single = []
-  var grade = 0
-  var score = 0
+  let hash = hashPoints(cards)
+  let triple = []
+  let double = []
+  let single = []
+  let grade = 0
+  let score = 0
+  let extra = 0
 
   Object.keys(hash).forEach(function (point) {
     if (hash[point] === 3) {
@@ -163,16 +164,30 @@ function detectLowValues (cards) {
   if (double.length === 2) {
     grade = 2
     score = 2 * Math.pow(100, 5)
-    double.sort((a, b) => a - b).forEach((point, i) => score += point * Math.pow(100, i + 3))
+    double.sort((a, b) => a - b).forEach((point, i) => {
+      if (i === 1) {
+        let suits = cards.filter(card => card[1] === point).map(card => card[0])
+        extra = 5 - Math.min(...suits)
+      }
+      return score += point * Math.pow(100, i + 3)
+    })
   }
   if (double.length === 1) {
     grade = 1
     score = Math.pow(100, 5) + double[0] * Math.pow(100, 4)
+    let suits = cards.filter(card => card[1] === double[0]).map(card => card[0])
+    extra = 5 - Math.min(...suits)
   }
 
-  single.sort((a, b) => a - b).forEach((point, i) => score += point * Math.pow(100, i))
-
-  return { best: cards, grade, score }
+  single.sort((a, b) => a - b).forEach((point, i) => {
+    if (i === 4) {
+      let suits = cards.filter(card => card[1] === point).map(card => card[0])
+      extra = 5 - suits[0]
+    }
+    return score += point * Math.pow(100, i)
+  })
+  
+  return { best: cards, grade, score, extra }
 }
 
 function detectValue (cards) {
