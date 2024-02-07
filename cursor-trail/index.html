@@ -1,0 +1,97 @@
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+}
+</style>
+
+<canvas></canvas>
+
+<script>
+const canvas = document.querySelector('canvas')
+const ctx = canvas.getContext('2d')
+
+const pointer = {
+  x: window.innerWidth / 2,
+  y: window.innerHeight / 2,
+  moved: false,
+}
+
+const params = {
+  pointsNumber: 40,
+  widthFactor: .3,
+  mouseThreshold: .6,
+  spring: .4,
+  friction: .5,
+}
+
+const trail = [...Array(params.pointsNumber)].map(() => ({
+  x: pointer.x,
+  y: pointer.y,
+  dx: 0,
+  dy: 0,
+}))
+
+function updateMousePosition(eX, eY) {
+  pointer.x = eX;
+  pointer.y = eY;
+}
+
+window.addEventListener('click', e => {
+  updateMousePosition(e.pageX, e.pageY)
+})
+
+window.addEventListener('mousemove', e => {
+  pointer.moved = true
+  updateMousePosition(e.pageX, e.pageY)
+})
+
+window.addEventListener('touchmove', e => {
+  pointer.moved = true
+  updateMousePosition(e.targetTouches[0].pageX, e.targetTouches[0].pageY)
+})
+
+function setup() {
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+}
+
+window.addEventListener('resize', setup)
+
+function loop(t) {
+  if (!pointer.moved) {
+    pointer.x = (.5 + .3 * Math.cos(.002 * t) * (Math.sin(.005 * t))) * window.innerWidth
+    pointer.y = (.5 + .2 * (Math.cos(.005 * t)) + .1 * Math.cos(.01 * t)) * window.innerHeight
+  }
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  trail.forEach((p, index) => {
+    const prev = index === 0 ? pointer : trail[index - 1]
+    const spring = index === 0 ? .4 * params.spring : params.spring
+    p.dx += (prev.x - p.x) * spring
+    p.dy += (prev.y - p.y) * spring
+    p.dx *= params.friction
+    p.dy *= params.friction
+    p.x += p.dx
+    p.y += p.dy
+  })
+
+  ctx.beginPath()
+  ctx.moveTo(trail[0].x, trail[0].y)
+  for (let i = 1; i < trail.length - 1; i++) {
+    const xc = .5 * (trail[i].x + trail[i + 1].x)
+    const yc = .5 * (trail[i].y + trail[i + 1].y)
+    ctx.quadraticCurveTo(trail[i].x, trail[i].y, xc, yc)
+    ctx.lineWidth = params.widthFactor * (params.pointsNumber - i)
+    ctx.stroke()
+  }
+  ctx.lineTo(trail[trail.length - 1].x, trail[trail.length - 1].y)
+  ctx.stroke()
+
+  window.requestAnimationFrame(loop)
+}
+
+setup()
+loop(0)
+</script>

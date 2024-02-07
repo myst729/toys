@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Hilbert Curve</title>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+  </head>
+  <body>
+    <section class="container mt-3">
+      <div class="d-flex">
+        <section class="me-4">
+          <h1 class="mb-4">Hilbert Curve</h1>
+          <div class="mb-3">
+            <label for="canvasSize" class="form-label">Canvas Size:</label>
+            <span></span>
+            <input type="range" class="form-range" min="200" max="800" step="100" id="canvasSize" />
+          </div>
+          <div class="mb-3">
+            <label for="iterationCount" class="form-label">Iteration Count:</label>
+            <span></span>
+            <input type="range" class="form-range" min="1" max="9" step="1" id="iterationCount" />
+          </div>
+          <div class="mb-3">
+            <label for="lineWidth" class="form-label">Line Width:</label>
+            <span></span>
+            <input type="range" class="form-range" min="1" max="9" step="1" id="lineWidth" />
+          </div>
+        </section>
+        <section>
+          <canvas></canvas>
+        </section>
+      </div>
+    </section>
+    <script>
+      ((doc, win, undef) => {
+        const params = {
+          canvasSize: 400,
+          iterationCount: 5,
+          lineWidth: 2,
+        }
+        const canvasSizeInput = doc.getElementById('canvasSize')
+        const iterationCountInput = doc.getElementById('iterationCount')
+        const lineWidthInput = doc.getElementById('lineWidth')
+        const canvas = doc.querySelector('canvas')
+        const context = canvas.getContext('2d')
+
+        const drawShapes = (depth, dir, xStart, yStart, xEnd, yEnd, ctx) => {
+          const xCenter = (xStart + xEnd) / 2
+          const yCenter = (yStart + yEnd) / 2
+          if (depth > 1) {
+            if (dir > 0) {
+              drawShapes(depth - 1, -1, xStart,  yStart,  xCenter, yCenter, ctx)
+              drawShapes(depth - 1,  1, xStart,  yCenter, xCenter, yEnd,    ctx)
+              drawShapes(depth - 1,  1, xCenter, yCenter, xEnd,    yEnd,    ctx)
+              drawShapes(depth - 1, -1, xEnd,    yCenter, xCenter, yStart,  ctx)
+            } else {
+              drawShapes(depth - 1,  1, xStart,  yStart,  xCenter, yCenter, ctx)
+              drawShapes(depth - 1, -1, xCenter, yStart,  xEnd,    yCenter, ctx)
+              drawShapes(depth - 1, -1, xCenter, yCenter, xEnd,    yEnd,    ctx)
+              drawShapes(depth - 1,  1, xCenter, yEnd,    xStart,  yCenter, ctx)
+            }
+          }
+          if (depth === 1) {
+            const dx = xEnd - xStart
+            const dy = yEnd - yStart
+            ctx.lineTo(xStart + dx * 1/4,       yStart + dy * 1/4)
+            ctx.lineTo(xStart + dx * (2-dir)/4, yStart + dy * (2+dir)/4)
+            ctx.lineTo(xStart + dx * 3/4,       yStart + dy * 3/4)
+            ctx.lineTo(xStart + dx * (2+dir)/4, yStart + dy * (2-dir)/4)
+          }
+        }
+
+        const drawPattern = (iteration, size, lineWidth, ctx) => {
+          ctx.lineWidth = lineWidth
+          ctx.strokeStyle = 'red'
+          ctx.beginPath()
+          ctx.moveTo(size / Math.pow(2, iteration + 1), size / Math.pow(2, iteration + 1))
+          drawShapes(iteration, 1, 0, 0, size, size, ctx)
+          ctx.stroke()
+        }
+
+        const drawCurve = (canvas, context, params) => {
+          const { canvasSize, iterationCount, lineWidth } = params
+          canvas.height = canvas.width = canvasSize
+          drawPattern(iterationCount, canvasSize, lineWidth, context)
+        }
+
+        const eventHandler = (e) => {
+          params[e.target.id] = +e.target.value
+          e.target.previousElementSibling.textContent = e.target.value
+          drawCurve(canvas, context, params)
+        }
+
+        const init = () => {
+          const { canvasSize, iterationCount, lineWidth } = params
+          canvasSizeInput.value = canvasSizeInput.previousElementSibling.textContent = canvasSize
+          canvasSizeInput.addEventListener('input', eventHandler)
+          iterationCountInput.value = iterationCountInput.previousElementSibling.textContent = iterationCount
+          iterationCountInput.addEventListener('input', eventHandler)
+          lineWidthInput.value = lineWidthInput.previousElementSibling.textContent = lineWidth
+          lineWidthInput.addEventListener('input', eventHandler)
+          drawCurve(canvas, context, params)
+        }
+
+        init()
+      })(document, window)
+    </script>
+  </body>
+</html>
