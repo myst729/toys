@@ -1,109 +1,118 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Hilbert Curve</title>
-    <link rel="stylesheet" href="bootstrap.min.css" />
-  </head>
-  <body>
-    <section class="container mt-3">
-      <div class="d-flex">
-        <section class="me-4">
-          <h1 class="mb-4">Hilbert Curve</h1>
-          <div class="mb-3">
-            <label for="canvasSize" class="form-label">Canvas Size:</label>
-            <span></span>
-            <input type="range" class="form-range" min="200" max="800" step="100" id="canvasSize" />
-          </div>
-          <div class="mb-3">
-            <label for="iterationCount" class="form-label">Iteration Count:</label>
-            <span></span>
-            <input type="range" class="form-range" min="1" max="9" step="1" id="iterationCount" />
-          </div>
-          <div class="mb-3">
-            <label for="lineWidth" class="form-label">Line Width:</label>
-            <span></span>
-            <input type="range" class="form-range" min="1" max="9" step="1" id="lineWidth" />
-          </div>
-        </section>
-        <section>
-          <canvas></canvas>
-        </section>
-      </div>
-    </section>
-    <script>
-      ((doc, win, undef) => {
-        const params = {
-          canvasSize: 400,
-          iterationCount: 5,
-          lineWidth: 2,
-        }
-        const canvasSizeInput = doc.getElementById('canvasSize')
-        const iterationCountInput = doc.getElementById('iterationCount')
-        const lineWidthInput = doc.getElementById('lineWidth')
-        const canvas = doc.querySelector('canvas')
-        const context = canvas.getContext('2d')
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+  <title>Hilbert Curve</title>
+  <link rel="stylesheet" href="bootstrap.min.css" />
+</head>
+<body>
+  <section class="container mt-3">
+    <div class="d-flex">
+      <section class="me-4">
+        <h1 class="mb-4">Hilbert Curve</h1>
+        <div class="mb-3">
+          <label for="imageSize" class="form-label">Image Size:</label>
+          <span></span>
+          <input type="range" class="form-range" min="200" max="800" step="100" value="400" id="imageSize" />
+        </div>
+        <div class="mb-3">
+          <label for="iterationCount" class="form-label">Iteration Count:</label>
+          <span></span>
+          <input type="range" class="form-range" min="1" max="9" step="1" value="5" id="iterationCount" />
+        </div>
+        <div class="mb-3">
+          <label for="strokeWidth" class="form-label">Line Width:</label>
+          <span></span>
+          <input type="range" class="form-range" min="0.1" max="9" step="0.1" value="1" id="strokeWidth" />
+        </div>
+      </section>
+      <section>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+          <path id="path" fill="none" stroke="black" stroke-width="1" stroke-linecap="square" />
+        </svg>
+      </section>
+    </div>
+  </section>
+  <script>
+    ((doc, win, undef) => {
+      const imageSizeInput = doc.getElementById('imageSize')
+      const iterationCountInput = doc.getElementById('iterationCount')
+      const strokeWidthInput = doc.getElementById('strokeWidth')
+      const path = doc.getElementById('path')
 
-        const drawShapes = (depth, dir, xStart, yStart, xEnd, yEnd, ctx) => {
-          const xCenter = (xStart + xEnd) / 2
-          const yCenter = (yStart + yEnd) / 2
-          if (depth > 1) {
-            if (dir > 0) {
-              drawShapes(depth - 1, -1, xStart,  yStart,  xCenter, yCenter, ctx)
-              drawShapes(depth - 1,  1, xStart,  yCenter, xCenter, yEnd,    ctx)
-              drawShapes(depth - 1,  1, xCenter, yCenter, xEnd,    yEnd,    ctx)
-              drawShapes(depth - 1, -1, xEnd,    yCenter, xCenter, yStart,  ctx)
-            } else {
-              drawShapes(depth - 1,  1, xStart,  yStart,  xCenter, yCenter, ctx)
-              drawShapes(depth - 1, -1, xCenter, yStart,  xEnd,    yCenter, ctx)
-              drawShapes(depth - 1, -1, xCenter, yCenter, xEnd,    yEnd,    ctx)
-              drawShapes(depth - 1,  1, xCenter, yEnd,    xStart,  yCenter, ctx)
-            }
+      const getPoints = (depth, sx, sy, dx, dy, direction) => {
+        // [sx, sy]: start point
+        // [cx, cy]: center point
+        // [dx, dy]: diagnal point
+        const result = []
+        const cx = (sx + dx) / 2
+        const cy = (sy + dy) / 2
+        if (depth > 1) {
+          if (direction > 0) {
+            return [
+              ...getPoints(depth - 1, sx, sy, cx, cy, -direction),
+              ...getPoints(depth - 1, sx, cy, cx, dy,  direction),
+              ...getPoints(depth - 1, cx, cy, dx, dy,  direction),
+              ...getPoints(depth - 1, dx, cy, cx, sy, -direction),
+            ]
+          } else {
+            return [
+              ...getPoints(depth - 1, sx, sy, cx, cy, -direction),
+              ...getPoints(depth - 1, cx, sy, dx, cy,  direction),
+              ...getPoints(depth - 1, cx, cy, dx, dy,  direction),
+              ...getPoints(depth - 1, cx, dy, sx, cy, -direction),
+            ]
           }
-          if (depth === 1) {
-            const dx = xEnd - xStart
-            const dy = yEnd - yStart
-            ctx.lineTo(xStart + dx * 1/4,       yStart + dy * 1/4)
-            ctx.lineTo(xStart + dx * (2-dir)/4, yStart + dy * (2+dir)/4)
-            ctx.lineTo(xStart + dx * 3/4,       yStart + dy * 3/4)
-            ctx.lineTo(xStart + dx * (2+dir)/4, yStart + dy * (2-dir)/4)
+        } else {
+          if (direction > 0) {
+            return [
+              [(sx + cx) / 2, (sy + cy) / 2],
+              [(sx + cx) / 2, (cy + dy) / 2],
+              [(cx + dx) / 2, (cy + dy) / 2],
+              [(dx + cx) / 2, (cy + sy) / 2],
+            ]
+          } else {
+            return [
+              [(sx + cx) / 2, (sy + cy) / 2],
+              [(cx + dx) / 2, (sy + cy) / 2],
+              [(cx + dx) / 2, (cy + dy) / 2],
+              [(cx + sx) / 2, (dy + cy) / 2],
+            ]
           }
         }
+      }
 
-        const drawPattern = (iteration, size, lineWidth, ctx) => {
-          ctx.lineWidth = lineWidth
-          ctx.strokeStyle = 'red'
-          ctx.beginPath()
-          ctx.moveTo(size / Math.pow(2, iteration + 1), size / Math.pow(2, iteration + 1))
-          drawShapes(iteration, 1, 0, 0, size, size, ctx)
-          ctx.stroke()
-        }
+      const generateD = (depth, size) => {
+        const points = getPoints(depth, 0, 0, size, size, 1)
+        return `M ${points.map(p => p.join(',')).join(' L ')}`
+      }
 
-        const drawCurve = (canvas, context, params) => {
-          const { canvasSize, iterationCount, lineWidth } = params
-          canvas.height = canvas.width = canvasSize
-          drawPattern(iterationCount, canvasSize, lineWidth, context)
-        }
+      const updateImage = () => {
+        const svg = path.parentElement
+        const depth = +iterationCountInput.value
+        const size = +imageSizeInput.value
+        const strokeWidth = +strokeWidthInput.value
 
-        const eventHandler = (e) => {
-          params[e.target.id] = +e.target.value
-          e.target.previousElementSibling.textContent = e.target.value
-          drawCurve(canvas, context, params)
-        }
+        imageSizeInput.previousElementSibling.textContent = size
+        iterationCountInput.previousElementSibling.textContent = depth
+        strokeWidthInput.previousElementSibling.textContent = +strokeWidth
 
-        const init = () => {
-          const { canvasSize, iterationCount, lineWidth } = params
-          canvasSizeInput.value = canvasSizeInput.previousElementSibling.textContent = canvasSize
-          canvasSizeInput.addEventListener('input', eventHandler)
-          iterationCountInput.value = iterationCountInput.previousElementSibling.textContent = iterationCount
-          iterationCountInput.addEventListener('input', eventHandler)
-          lineWidthInput.value = lineWidthInput.previousElementSibling.textContent = lineWidth
-          lineWidthInput.addEventListener('input', eventHandler)
-          drawCurve(canvas, context, params)
-        }
+        svg.setAttribute('width', size)
+        svg.setAttribute('height', size)
+        svg.setAttribute('viewBox', `0 0 ${size} ${size}`)
+        path.setAttribute('stroke-width', strokeWidth)
+        path.setAttribute('d', generateD(depth, size))
+      }
 
-        init()
-      })(document, window)
-    </script>
-  </body>
-</html>
+      const init = () => {
+        imageSizeInput.addEventListener('input', updateImage)
+        iterationCountInput.addEventListener('input', updateImage)
+        strokeWidthInput.addEventListener('input', updateImage)
+        updateImage()
+      }
+
+      init()
+    })(document, window)
+</script>
+</body>
