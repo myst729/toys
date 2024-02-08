@@ -41,7 +41,7 @@
       const strokeWidthInput = doc.getElementById('strokeWidth')
       const path = doc.getElementById('path')
 
-      const getPoints = (depth, sx, sy, dx, dy, direction) => {
+      const getPoints = (depth, sx, sy, dx, dy, ccw) => {
         // [sx, sy]: start point
         // [cx, cy]: center point
         // [dx, dy]: diagnal point
@@ -49,23 +49,23 @@
         const cx = (sx + dx) / 2
         const cy = (sy + dy) / 2
         if (depth > 1) {
-          if (direction > 0) {
+          if (ccw) {
             return [
-              ...getPoints(depth - 1, sx, sy, cx, cy, -direction),
-              ...getPoints(depth - 1, sx, cy, cx, dy,  direction),
-              ...getPoints(depth - 1, cx, cy, dx, dy,  direction),
-              ...getPoints(depth - 1, dx, cy, cx, sy, -direction),
+              ...getPoints(depth - 1, sx, sy, cx, cy, !ccw),
+              ...getPoints(depth - 1, sx, cy, cx, dy, ccw),
+              ...getPoints(depth - 1, cx, cy, dx, dy, ccw),
+              ...getPoints(depth - 1, dx, cy, cx, sy, !ccw),
             ]
           } else {
             return [
-              ...getPoints(depth - 1, sx, sy, cx, cy, -direction),
-              ...getPoints(depth - 1, cx, sy, dx, cy,  direction),
-              ...getPoints(depth - 1, cx, cy, dx, dy,  direction),
-              ...getPoints(depth - 1, cx, dy, sx, cy, -direction),
+              ...getPoints(depth - 1, sx, sy, cx, cy, !ccw),
+              ...getPoints(depth - 1, cx, sy, dx, cy, ccw),
+              ...getPoints(depth - 1, cx, cy, dx, dy, ccw),
+              ...getPoints(depth - 1, cx, dy, sx, cy, !ccw),
             ]
           }
         } else {
-          if (direction > 0) {
+          if (ccw) {
             return [
               [(sx + cx) / 2, (sy + cy) / 2],
               [(sx + cx) / 2, (cy + dy) / 2],
