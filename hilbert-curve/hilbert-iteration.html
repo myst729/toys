@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+  <title>Hilbert Curve</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: monospace;
+    }
+    body {
+      display: grid;
+      grid-template: 50px 1fr / repeat(2, 602px);
+      gap: 20px 50px;
+      padding: 0 50px;
+    }
+    article {
+      pointer-events: none;
+      position: absolute;
+      z-index: 10;
+    }
+    .level1 {
+      display: grid;
+      grid-template: repeat(2, 300px) / repeat(2, 300px);
+      gap: 2px;
+      position: relative;
+    }
+    .dotted {
+      width: 150px;
+      height: 0;
+      border-top: 4px dotted black;
+      opacity: .3;
+    }
+    .dotted1 {
+      top: 298px;
+      left: 1px;
+      transform: rotate(90deg);
+    }
+    .dotted2 {
+      top: 374px;
+      left: 226px;
+    }
+    .dotted3 {
+      top: 298px;
+      left: 453px;
+      transform: rotate(90deg);
+    }
+    .dotted4 {
+      top:  74px;
+      left: 223px;
+    }
+    .dotted5 {
+      top: 298px;
+      left: 303px;
+      transform: rotate(90deg);
+    }
+    .dotted6 {
+      top: 526px;
+      left: 226px;
+    }
+    .level2 {
+      display: grid;
+      grid-template: repeat(2, 149px) / repeat(2, 149px);
+      gap: 2px;
+      position: relative;
+    }
+    .level2:before {
+      content: attr(data-direction);
+      color: green;
+      font-size: 32px;
+      pointer-events: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ddd;
+      font-size: 36px;
+      transition: background-color linear .25s;
+      position: relative;
+    }
+    .level2:hover div {
+      background-color: #bbb;
+    }
+    .line {
+      top: 74px;
+      left: 74px;
+      width: 154px;
+      height: 154px;
+      border: 4px solid black;
+      opacity: .3;
+    }
+    .ccw .line {
+      border-top: 0 none;
+    }
+    .cw .line {
+      border-left: 0 none;
+    }
+    .start,
+    .diagonal {
+      font-size: 16px;
+      height: 6px;
+      width: 6px;
+      border-radius: 4px;
+    }
+    .start {
+      background-color: red;
+      top: 0;
+      left: 0;
+    }
+    .diagonal {
+      background-color: blue;
+      bottom: 0;
+      right: 0;
+    }
+    .start:before {
+      content: 'start';
+      color: red;
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+    .diagonal:before {
+      content: 'diagonal';
+      color: blue;
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+    }
+    .flip {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+  <h1>Counter-clockwise</h1>
+  <h1>Clockwise</h1>
+  <section class="level1">
+    <section class="level2 cw" data-direction="cw">
+      <div>1</div>
+      <div>2</div>
+      <div>4</div>
+      <div>3</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <section class="level2 cw flip" data-direction="cw">
+      <div>1(13)</div>
+      <div>2(14)</div>
+      <div>4(16)</div>
+      <div>3(15)</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <section class="level2 ccw" data-direction="ccw">
+      <div>1(5)</div>
+      <div>4(8)</div>
+      <div>2(6)</div>
+      <div>3(7)</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <section class="level2 ccw" data-direction="ccw">
+      <div>1(9)</div>
+      <div>4(12)</div>
+      <div>2(10)</div>
+      <div>3(11)</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <article class="dotted dotted1"></article>
+    <article class="dotted dotted2"></article>
+    <article class="dotted dotted3"></article>
+  </section>
+
+  <section class="level1">
+    <section class="level2 ccw" data-direction="ccw">
+      <div>1</div>
+      <div>4</div>
+      <div>2</div>
+      <div>3</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <section class="level2 cw" data-direction="cw">
+      <div>1(5)</div>
+      <div>2(6)</div>
+      <div>4(8)</div>
+      <div>3(7)</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <section class="level2 ccw flip" data-direction="ccw">
+      <div>1(13)</div>
+      <div>4(16)</div>
+      <div>2(14)</div>
+      <div>3(15)</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <section class="level2 cw" data-direction="cw">
+      <div>1(9)</div>
+      <div>2(10)</div>
+      <div>4(12)</div>
+      <div>3(11)</div>
+      <article class="line"></article>
+      <article class="start"></article>
+      <article class="diagonal"></article>
+    </section>
+    <article class="dotted dotted4"></article>
+    <article class="dotted dotted5"></article>
+    <article class="dotted dotted6"></article>
+  </section>
+</body>
