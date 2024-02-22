@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
   <title>Hilbert Curve</title>
   <link rel="stylesheet" href="bootstrap.min.css" />
+  <style>
+    .canvas {
+      position: relative;
+    }
+    .marker {
+      height: 0px;
+      width: 0px;
+      border: 4px solid transparent;
+      border-left-width: 7px;
+      border-right-width: 0;
+      position: absolute;
+      z-index: 10;
+    }
+    .start {
+      border-left-color: red;
+    }
+    .end {
+      border-left-color: lime;
+    }
+  </style>
 </head>
 <body>
   <section class="container mt-3">
@@ -22,15 +42,21 @@
           <input type="range" class="form-range" min="1" max="9" step="1" value="5" id="iterationCount" />
         </div>
         <div class="mb-3">
+          <input type="checkbox" class="form-check-input" id="ccwCheck">
+          <label class="form-check-label" for="ccwCheck">Counterclockwise</label>
+        </div>
+        <div class="mb-3">
           <label for="strokeWidth" class="form-label">Stroke Width:</label>
           <span></span>
           <input type="range" class="form-range" min="0.1" max="9" step="0.1" value="1" id="strokeWidth" />
         </div>
       </section>
-      <section>
+      <section class="canvas mt-3 ms-3">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
           <path id="path" fill="none" stroke="black" stroke-width="1" stroke-linecap="square" />
         </svg>
+        <div class="marker start"></div>
+        <div class="marker end"></div>
       </section>
     </div>
   </section>
@@ -38,81 +64,116 @@
     ((doc, win, undef) => {
       const imageSizeInput = doc.getElementById('imageSize')
       const iterationCountInput = doc.getElementById('iterationCount')
+      const ccwCheckInput = doc.getElementById('ccwCheck')
       const strokeWidthInput = doc.getElementById('strokeWidth')
       const path = doc.getElementById('path')
+      const svg = path.parentElement
+      const markerStart = doc.querySelector('.start')
+      const markerEnd = doc.querySelector('.end')
 
-      const getPoints = (depth, sx, sy, dx, dy, ccw) => {
-        // [sx, sy]: start point
-        // [cx, cy]: center point
-        // [dx, dy]: diagonal point
-        const result = []
-        const cx = (sx + dx) / 2
-        const cy = (sy + dy) / 2
+      const getPoints = (depth, startX, startY, diagonalX, diagonalY, ccw) => {
+        const centerX = (startX + diagonalX) / 2
+        const centerY = (startY + diagonalY) / 2
         if (depth > 1) {
           if (ccw) {
             return [
-              ...getPoints(depth - 1, sx, sy, cx, cy, !ccw),
-              ...getPoints(depth - 1, sx, cy, cx, dy, ccw),
-              ...getPoints(depth - 1, cx, cy, dx, dy, ccw),
-              ...getPoints(depth - 1, dx, cy, cx, sy, !ccw),
+              ...getPoints(depth - 1, startX,    startY,  centerX,   centerY,  !ccw),
+              ...getPoints(depth - 1, startX,    centerY, centerX,   diagonalY, ccw),
+              ...getPoints(depth - 1, centerX,   centerY, diagonalX, diagonalY, ccw),
+              ...getPoints(depth - 1, diagonalX, centerY, centerX,   startY,   !ccw),
             ]
           } else {
             return [
-              ...getPoints(depth - 1, sx, sy, cx, cy, !ccw),
-              ...getPoints(depth - 1, cx, sy, dx, cy, ccw),
-              ...getPoints(depth - 1, cx, cy, dx, dy, ccw),
-              ...getPoints(depth - 1, cx, dy, sx, cy, !ccw),
+              ...getPoints(depth - 1, startX,  startY,    centerX,   centerY,  !ccw),
+              ...getPoints(depth - 1, centerX, startY,    diagonalX, centerY,   ccw),
+              ...getPoints(depth - 1, centerX, centerY,   diagonalX, diagonalY, ccw),
+              ...getPoints(depth - 1, centerX, diagonalY, startX,    centerY,  !ccw),
             ]
           }
         } else {
           if (ccw) {
             return [
-              [(sx + cx) / 2, (sy + cy) / 2],
-              [(sx + cx) / 2, (cy + dy) / 2],
-              [(cx + dx) / 2, (cy + dy) / 2],
-              [(dx + cx) / 2, (cy + sy) / 2],
+              [(startX + centerX) / 2,    (startY + centerY) / 2],
+              [(startX + centerX) / 2,    (centerY + diagonalY) / 2],
+              [(centerX + diagonalX) / 2, (centerY + diagonalY) / 2],
+              [(centerX + diagonalX) / 2, (startY + centerY) / 2],
             ]
           } else {
             return [
-              [(sx + cx) / 2, (sy + cy) / 2],
-              [(cx + dx) / 2, (sy + cy) / 2],
-              [(cx + dx) / 2, (cy + dy) / 2],
-              [(cx + sx) / 2, (dy + cy) / 2],
+              [(startX + centerX) / 2,    (startY + centerY) / 2],
+              [(centerX + diagonalX) / 2, (startY + centerY) / 2],
+              [(centerX + diagonalX) / 2, (centerY + diagonalY) / 2],
+              [(startX + centerX) / 2,    (centerY + diagonalY) / 2],
             ]
           }
         }
       }
 
-      const generateD = (depth, size) => {
-        const points = getPoints(depth, 0, 0, size, size, 1)
-        return `M ${points.map(p => p.join(',')).join(' L ')}`
+      const updatePath = (size, points, strokeWidth) => {
+        svg.setAttribute('width', size)
+        svg.setAttribute('height', size)
+        svg.setAttribute('viewBox', `0 0 ${size} ${size}`)
+        path.setAttribute('stroke-width', strokeWidth)
+        path.setAttribute('d', `M ${points.map(p => p.join(',')).join(' L ')}`)
       }
 
-      const updateImage = () => {
-        const svg = path.parentElement
-        const depth = +iterationCountInput.value
+      const updateMarkers = (ccw, points, odd) => {
+        const start = points[0]
+        const end = points[points.length - 1]
+        if (ccw) {
+          if (odd) {
+            markerStart.style.transform = 'translate(-50%, -50%) rotate(90deg)'
+            markerStart.style.left =  `${start[0]}px`
+            markerStart.style.top = `${start[1] - 10}px`
+            markerEnd.style.transform = 'translate(-50%, -50%) rotate(270deg)'
+            markerEnd.style.left =  `${end[0]}px`
+            markerEnd.style.top = `${end[1] - 10}px`
+          } else {
+            markerStart.style.transform = markerEnd.style.transform = 'translate(-50%, -50%)'
+            markerStart.style.left =  `${start[0] - 10}px`
+            markerStart.style.top = `${start[1]}px`
+            markerEnd.style.left = `${end[0] + 10}px`
+            markerEnd.style.top = `${end[1]}px`
+          }
+        } else {
+          if (odd) {
+            markerStart.style.transform = 'translate(-50%, -50%)'
+            markerStart.style.top = `${start[1]}px`
+            markerStart.style.left = `${start[0] - 10}px`
+            markerEnd.style.transform = 'translate(-50%, -50%) rotate(180deg)'
+            markerEnd.style.top = `${end[1]}px`
+            markerEnd.style.left = `${end[0] - 10}px`
+          } else {
+            markerStart.style.transform = markerEnd.style.transform = 'translate(-50%, -50%) rotate(90deg)'
+            markerStart.style.top = `${start[1] - 10}px`
+            markerStart.style.left = `${start[0]}px`
+            markerEnd.style.top = `${end[1] + 10}px`
+            markerEnd.style.left = `${end[0]}px`
+          }
+        }
+      }
+
+      const update = () => {
         const size = +imageSizeInput.value
+        const depth = +iterationCountInput.value
+        const direction = ccwCheckInput.checked
         const strokeWidth = +strokeWidthInput.value
+        const points = getPoints(depth, 0, 0, size, size, direction)
 
         imageSizeInput.previousElementSibling.textContent = size
         iterationCountInput.previousElementSibling.textContent = depth
         strokeWidthInput.previousElementSibling.textContent = +strokeWidth
 
-        svg.setAttribute('width', size)
-        svg.setAttribute('height', size)
-        svg.setAttribute('viewBox', `0 0 ${size} ${size}`)
-        path.setAttribute('stroke-width', strokeWidth)
-        path.setAttribute('d', generateD(depth, size))
+        updatePath(size, points, strokeWidth)
+        updateMarkers(direction, points, depth % 2)
       }
 
-      const init = () => {
-        imageSizeInput.addEventListener('input', updateImage)
-        iterationCountInput.addEventListener('input', updateImage)
-        strokeWidthInput.addEventListener('input', updateImage)
-        updateImage()
-      }
+      imageSizeInput.addEventListener('input', update)
+      iterationCountInput.addEventListener('input', update)
+      ccwCheckInput.addEventListener('input', update)
+      strokeWidthInput.addEventListener('input', update)
 
-      init()
+      update()
     })(document, window)
 </script>
 </body>
