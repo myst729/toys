@@ -25,13 +25,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #ddd;
+      background-color: #aaa;
       font-size: 48px;
       transition: background-color linear .25s;
       position: relative;
     }
     div:hover {
-      background-color: #bbb;
+      background-color: #777;
     }
     article {
       pointer-events: none;
@@ -66,12 +66,12 @@
       left: 0;
     }
     .diagonal {
-      background-color: blue;
+      background-color: lime;
       bottom: 0;
       right: 0;
     }
     .center {
-      background-color: green;
+      background-color: blue;
       top: 298px;
       left: 298px;
     }
@@ -84,14 +84,14 @@
     }
     .diagonal:before {
       content: 'diagonal';
-      color: blue;
+      color: lime;
       position: absolute;
       bottom: 5px;
       right: 5px;
     }
     .center:before {
       content: 'center';
-      color: green;
+      color: blue;
       position: absolute;
       top: 8px;
       left: -20px;
@@ -99,22 +99,22 @@
   </style>
 </head>
 <body>
-  <h1>Counter-clockwise</h1>
-  <h1>Clockwise</h1>
-  <section class="ccw">
+  <h1>Clockwise (CW)</h1>
+  <h1>Counterclockwise (CCW)</h1>
+  <section class="cw">
     <div>1</div>
-    <div>4</div>
     <div>2</div>
+    <div>4</div>
     <div>3</div>
     <article class="line"></article>
     <article class="start"></article>
     <article class="diagonal"></article>
     <article class="center"></article>
   </section>
-  <section class="cw">
+  <section class="ccw">
     <div>1</div>
-    <div>2</div>
     <div>4</div>
+    <div>2</div>
     <div>3</div>
     <article class="line"></article>
     <article class="start"></article>
