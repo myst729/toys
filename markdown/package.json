@@ -4,7 +4,7 @@
   "description": "GFM-like markdown parsing service.",
   "author": "Leo",
   "private": true,
-  "main": "index.js",
+  "main": "server.js",
   "license": "MIT",
   "keywords": [
     "markdown"
