@@ -1,0 +1,82 @@
+<title>SVG Goo Effect</title>
+
+<style>
+body {
+  font-family: sans-serif;
+}
+label, input {
+  cursor: pointer;
+}
+.dots {
+  width: 200px;
+  height: 200px;
+  margin: 50px auto 0;
+  position: relative;
+}
+.on {
+  filter: url("#effect");
+}
+.dot {
+  border-radius: 50%;
+  position: absolute;
+  left: 140px;
+  top: 80px;
+  transform-origin: -40px;
+  animation: loop 1s linear infinite;
+}
+.dot:nth-child(1) {
+  background: #03a9f4;
+  width: 32px;
+  height: 32px;
+  animation-duration: 2s;
+}
+.dot:nth-child(2) {
+  background: #5af158;
+  width: 34px;
+  height: 34px;
+  animation-duration: 4s;
+}
+.dot:nth-child(3) {
+  background: #ffc107;
+  width: 42px;
+  height: 42px;
+  animation-duration: 3s;
+}
+.dot:nth-child(4) {
+  background: #ff5722;
+  width: 28px;
+  height: 28px;
+  animation-duration: 5s;
+}
+@keyframes loop {
+  from { transform: rotate(0) }
+  to { transform: rotate(360deg) }
+}
+</style>
+
+<h1>SVG Goo Effect</h1>
+<label><input type="checkbox" checked> SVG Filter On</label>
+<div class="dots">
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+</div>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="0" height="0">
+  <defs>
+    <filter id="effect">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+    </filter>
+  </defs>
+</svg>
+
+<script>
+((doc, win, undef) => {
+  const handle = doc.querySelector('input')
+  const container = doc.querySelector('.dots')
+  const toggle = () => container.classList.toggle('on', handle.checked)
+  handle.addEventListener('input', toggle, false)
+  toggle()
+})(document, window)
+</script>
