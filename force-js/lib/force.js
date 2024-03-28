@@ -6,12 +6,12 @@
  * URL:    https://github.com/myst729/force.js
  */
 
-void function(window, document, undefined) {
+void function(doc, win, undef) {
 
   // ES5 strict mode
   "use strict";
 
-  var head = document.getElementsByTagName('head')[0];
+  var head = doc.getElementsByTagName('head')[0];
   var modules = {};   // map of all registered modules
   var injects = {};   // map of all scripts that have been injected
   var callbacks = {}; // stores the callbacks sequence for future execution
@@ -19,7 +19,7 @@ void function(window, document, undefined) {
 
   // Append a script tag into the document head.
   function appendScript(path) {
-    var node = document.createElement('script');
+    var node = doc.createElement('script');
     node.type = 'text/javascript';
     node.async = 'true';
     node.src = path + '.js';
@@ -129,15 +129,15 @@ void function(window, document, undefined) {
     defineModule.amd = {};
 
     // Expose define and require method to the window object.
-    window.define = defineModule;
-    window.require = requireModule;
+    win.define = defineModule;
+    win.require = requireModule;
 
     // Load app script.
-    var app = document.querySelector('script[data-main]').dataset.main;
+    var app = doc.querySelector('script[data-main]').dataset.main;
     appendScript(app);
   }
 
   // Go!
   init();
 
-}(window, document);
+}(document, window);
