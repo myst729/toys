@@ -133,7 +133,7 @@ void function(window, document, undefined) {
     window.require = requireModule;
 
     // Load app script.
-    var app = document.getElementsByTagName('script')[0].getAttribute('data-main');
+    var app = document.querySelector('script[data-main]').dataset.main;
     appendScript(app);
   }
 
