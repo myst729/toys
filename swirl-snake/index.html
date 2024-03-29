@@ -1,0 +1,125 @@
+<title>Swirl Snake</title>
+
+<style>
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+body {
+  font-family: sans-serif;
+  margin: 30px;
+}
+span {
+  display: inline-block;
+  width: 90px;
+}
+label {
+  margin-right: 16px;
+}
+section {
+  margin-top: 30px;
+  position: relative;
+}
+div {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  position: absolute;
+}
+</style>
+
+<h1>Swirl Snake</h1>
+<p>
+  <span>Side length</span>
+  <input type="number" name="side" step="1" min="3" max="12" value="8">
+</p>
+<p>
+  <span>Swirl</span>
+  <label><input type="radio" name="swirl" value="1" checked> Clockwise</label>
+  <label><input type="radio" name="swirl" value="-1"> Counter-clockwise</label>
+</p>
+<p>
+  <span>Direction</span>
+  <label><input type="radio" name="direction" value="1" checked> Outside-in</label>
+  <label><input type="radio" name="direction" value="-1"> Inside-out</label>
+</p>
+<section></section>
+
+<script>
+((doc, win, undef) => {
+  const container = doc.querySelector('section')
+  const options = doc.querySelectorAll('input')
+  const state = { length: 0, direction: 0, swirl: 0 }
+
+  const calculate = (side, swirl, direction) => {
+    const result = []
+    const cw = swirl * direction
+    const moving = { x: Math.sign(1 + cw), y: Math.sign(1 - cw), diff: 1 }
+    const pos = { row: Math.sign(-1 + cw), col: Math.sign(-1 - cw) }
+
+    const fill = (border) => {
+      while (border--) {
+        pos.row += moving.y
+        pos.col += moving.x
+        result.push({ ...pos })
+      }
+    }
+
+    fill(side)
+    while (--side) {
+      moving.x -= cw * moving.diff
+      moving.y += cw * moving.diff
+      fill(side)
+      moving.x -= moving.diff
+      moving.y -= moving.diff
+      fill(side)
+      moving.diff = -moving.diff
+    }
+    return direction === 1 ? result : result.reverse()
+  }
+
+  const draw = () => {
+    const { length, swirl, direction } = state
+    const result = calculate(length, swirl, direction)
+    const frag = doc.createDocumentFragment()
+    result.forEach((p, i) => {
+      const div = doc.createElement('div')
+      div.textContent = i
+      div.style.backgroundColor = `hsla(207, 100%, 50%, ${i / length / length})`
+      div.style.top = `${31 * p.row}px`
+      div.style.left = `${31 * p.col}px`
+      frag.appendChild(div)
+    })
+    container.replaceChildren()
+    container.appendChild(frag)
+  }
+
+  const update = () => {
+    options.forEach(input => {
+      switch (input.name) {
+        case 'side':
+          state.length = +input.value
+          break;
+        case 'swirl':
+          if (input.checked) {
+            state.swirl = +input.value
+          }
+          break;
+        case 'direction':
+          if (input.checked) {
+            state.direction = +input.value
+          }
+          break;
+      }
+    })
+    draw()
+  }
+
+  options.forEach(input => input.addEventListener('input', update, false))
+
+  update()
+})(document, window)
+</script>
