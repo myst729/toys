@@ -25,6 +25,7 @@
 - [step-js](https://myst729.github.io/toys/step-js/)
 - [string-search-algorithms](https://myst729.github.io/toys/string-search-algorithms/)
 - [svg-goo-effect](https://myst729.github.io/toys/svg-goo-effect/)
+- [swirl-snake](https://myst729.github.io/toys/swirl-snake/)
 - [texas](https://myst729.github.io/toys/texas/)
 - [vue-favatar](https://myst729.github.io/toys/vue-favatar/)
 - [wecall](https://myst729.github.io/toys/wecall/)
