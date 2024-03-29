@@ -1,0 +1,175 @@
+<title>Neon Matrix Effects</title>
+
+<style>
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+body {
+  font-family: sans-serif;
+  margin: 30px;
+}
+section {
+  width: 190px;
+  height: 210px;
+  display: inline-block;
+  position: relative;
+}
+section:before {
+  content: attr(data-mode);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+p {
+  width: 22px;
+  height: 22px;
+  border: 1px solid #000;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 1);
+  position: absolute;
+}
+</style>
+
+<h1>Neon Matrix Effects</h1>
+<section data-mode="zigzag" data-fast="1">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+<section data-mode="scanline" data-fast="1">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+<section data-mode="swirl-in" data-fast="1">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+<section data-mode="swirl-out" data-fast="1">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+<section data-mode="circle-in" data-fast="0">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+<section data-mode="circle-out" data-fast="0">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+<section data-mode="square-in" data-fast="0">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+<section data-mode="square-out" data-fast="0">
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+  <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>
+</section>
+
+<script>
+((doc, win, undef) => {
+  const state = { frame: 0 }
+  const faces = doc.querySelectorAll('section')
+  const orders = {
+    'zigzag': [
+       0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+      32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63
+    ],
+    'scanline': [
+       0,  1,  2,  3,  4,  5,  6,  7, 15, 14, 13, 12, 11, 10,  9,  8, 16, 17, 18, 19, 20, 21, 22, 23, 31, 30, 29, 28, 27, 26, 25, 24,
+      32, 33, 34, 35, 36, 37, 38, 39, 47, 46, 45, 44, 43, 42, 41, 40, 48, 49, 50, 51, 52, 53, 54, 55, 63, 62, 61, 60, 59, 58, 57, 56
+    ],
+    'swirl-in': [
+       0,  1,  2,  3,  4,  5,  6,  7,  8, 33, 32, 31, 30, 29, 28, 27, 26, 47, 48, 49, 50, 51, 34,  9, 10, 35, 52, 61, 60, 59, 46, 25,
+      24, 45, 58, 63, 62, 53, 36, 11, 12, 37, 54, 55, 56, 57, 44, 23, 22, 43, 42, 41, 40, 39, 38, 13, 14, 15, 16, 17, 18, 19, 20, 21
+    ],
+    'swirl-out': [
+      63, 62, 61, 60, 59, 58, 57, 56, 55, 30, 31, 32, 33, 34, 35, 36, 37, 16, 15, 14, 13, 12, 29, 54, 53, 28, 11,  2,  3,  4, 17, 38,
+      39, 18,  5,  0,  1, 10, 27, 52, 51, 26,  9,  8,  7,  6, 19, 40, 41, 20, 21, 22, 23, 24, 25, 50, 49, 48, 47, 46, 45, 44, 43, 42
+    ],
+    'circle-in': [
+      0, 1, 2, 3, 3, 2, 1, 0, 1, 2, 3, 4, 4, 3, 2, 1, 2, 3, 4, 5, 5, 4, 3, 2, 3, 4, 5, 6, 6, 5, 4, 3,
+      3, 4, 5, 6, 6, 5, 4, 3, 2, 3, 4, 5, 5, 4, 3, 2, 1, 2, 3, 4, 4, 3, 2, 1, 0, 1, 2, 3, 3, 2, 1, 0
+    ],
+    'circle-out': [
+      6, 5, 4, 3, 3, 4, 5, 6, 5, 4, 3, 2, 2, 3, 4, 5, 4, 3, 2, 1, 1, 2, 3, 4, 3, 2, 1, 0, 0, 1, 2, 3,
+      3, 2, 1, 0, 0, 1, 2, 3, 4, 3, 2, 1, 1, 2, 3, 4, 5, 4, 3, 2, 2, 3, 4, 5, 6, 5, 4, 3, 3, 4, 5, 6
+    ],
+    'square-in': [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0, 1, 2, 3, 3, 2, 1, 0,
+      0, 1, 2, 3, 3, 2, 1, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    ],
+    'square-out': [
+      3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3, 3, 2, 1, 1, 1, 1, 2, 3, 3, 2, 1, 0, 0, 1, 2, 3,
+      3, 2, 1, 0, 0, 1, 2, 3, 3, 2, 1, 1, 1, 1, 2, 3, 3, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3
+    ]
+  }
+
+  const init = () => {
+    faces.forEach(face => {
+      const cells = face.querySelectorAll('p')
+      cells.forEach((cell, i) => {
+        const row = Math.floor(i / 8)
+        // const col = 7 - Math.abs(i % 16 - 7 - row % 2)
+        const col = row % 2 ? 7 - i % 8 : i % 8
+        cell.style.top = `${row * 21 + 32}px`
+        cell.style.left = `${col * 21}px`
+      })
+    })
+  }
+
+  const draw = (cell, i, speed, hue) => {
+    const threshold = speed ? 6 : 3
+    const exp = 2 ** threshold
+    // const diff = speed ? (state.frame - i + 64) % 64 : (Math.floor(state.frame / 4) - i + 8) % 8
+    const diff = (Math.floor(state.frame * exp / (2 ** (speed + 5))) - i + exp) % exp
+    if (diff >= 0 && diff < threshold) {
+      cell.style.backgroundColor = `hsla(${hue}, 100%, 50%, ${1 / (diff + 1)})`
+    } else {
+      cell.style.backgroundColor = 'rgba(255, 255, 255, 0)'
+    }
+  }
+
+  const update = (face, i) => {
+    const { mode, fast } = face.dataset
+    const hue = i * Math.floor(1080 / faces.length)
+    const cells = face.querySelectorAll('p')
+    cells.forEach((cell, j) => {
+      draw(cell, orders[mode][j], +fast, hue)
+    })
+  }
+
+  const delay = (ms) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms)
+    })
+  }
+
+  const loop = async () => {
+    faces.forEach(update)
+    await delay(30)
+    state.frame = (state.frame + 1) % 64
+    requestAnimationFrame(loop)
+  }
+
+  init()
+  loop()
+})(document, window)
+</script>
