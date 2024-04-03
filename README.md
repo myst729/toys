@@ -18,6 +18,7 @@
 - [markdown](https://myst729.github.io/toys/markdown/)
 - [n-puzzle-solver](https://myst729.github.io/toys/n-puzzle-solver/)
 - [neon-matrix-effects](https://myst729.github.io/toys/neon-matrix-effects/)
+- [pixel-icons](https://myst729.github.io/toys/pixel-icons/)
 - [point-in-polygon-algorithms](https://myst729.github.io/toys/point-in-polygon-algorithms/)
 - [search-highlight](https://myst729.github.io/toys/search-highlight/)
 - [simple-charts](https://myst729.github.io/toys/simple-charts/)
