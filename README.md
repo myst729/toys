@@ -1,4 +1,4 @@
-# toys
+# Toys
 
 - [15-puzzle](https://myst729.github.io/toys/15-puzzle/)
 - [a-star-pathfinding](https://myst729.github.io/toys/a-star-pathfinding/)
