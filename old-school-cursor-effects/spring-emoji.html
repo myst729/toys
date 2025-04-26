@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Spring Emoji</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    let DELTAT = 0.01
+    let SEGLEN = 10
+    let SPRINGK = 10
+    let MASS = 1
+    let GRAVITY = 50
+    let RESISTANCE = 10
+    let STOPVEL = 0.1
+    let STOPACC = 0.1
+    let DOTSIZE = 11
+    let BOUNCE = 0.7
+    let particles = Array(7).fill(0).map(() => ({ x: 0, y: 0, vx: 0, vy: 0 }))
+
+    function springForce(pa, pb, spring) {
+      let dx = pa.x - pb.x
+      let dy = pa.y - pb.y
+      let len = Math.sqrt(dx * dx + dy * dy)
+      if (len > SEGLEN) {
+        let springF = SPRINGK * (len - SEGLEN)
+        spring.x += (dx / len) * springF
+        spring.y += (dy / len) * springF
+      }
+    }
+
+    function update() {
+      ctx.font = '16px serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      particles.forEach((p, i) => {
+        if (i) {
+          let spring = { x: 0, y: 0 }
+          springForce(particles[i - 1], p, spring)
+          if (i < particles.length - 1) {
+            springForce(particles[i + 1], p, spring)
+          }
+          let resist = { x: -p.vx * RESISTANCE, y: -p.vy * RESISTANCE }
+          let accel = { x: (spring.x + resist.x) / MASS, y: (spring.y + resist.y) / MASS + GRAVITY }
+          p.vx += DELTAT * accel.x
+          p.vy += DELTAT * accel.y
+
+          if (
+            Math.abs(p.vx) < STOPVEL &&
+            Math.abs(p.vy) < STOPVEL &&
+            Math.abs(accel.x) < STOPACC &&
+            Math.abs(accel.y) < STOPACC
+          ) {
+            p.vx = 0
+            p.vy = 0
+          }
+
+          p.x += p.vx
+          p.y += p.vy
+
+          if (p.y >= height - DOTSIZE - 1) {
+            if (p.vy > 0) {
+              p.vy = BOUNCE * -p.vy
+            }
+            p.y = height - DOTSIZE - 1
+          }
+
+          if (p.x >= width - DOTSIZE) {
+            if (p.vx > 0) {
+              p.vx = BOUNCE * -p.vx
+            }
+            p.x = width - DOTSIZE - 1
+          }
+
+          if (p.x < 0) {
+            if (p.vx < 0) {
+              p.vx = BOUNCE * -p.vx
+            }
+            p.x = 0
+          }
+
+          ctx.fillText('🤪', p.x, p.y)
+        } else {
+          p.x = pos.x
+          p.y = pos.y
+        }
+      })
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      update()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>

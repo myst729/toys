@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Ribbon</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    const particles = Array(20).fill(0).map(() => ({ x: 0, y: 0 }))
+
+    function update() {
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.lineWidth = 10
+      ctx.strokeStyle = '#fe00008b'
+
+      const particleSets = []
+      let { x, y } = pos
+
+      particles.forEach((p, i) => {
+        const nextP = particles[i + 1] || particles[0]
+        p.x = x
+        p.y = y
+        particleSets.push({ x, y })
+        x += (nextP.x - x) * 0.8
+        y += (nextP.y - y) * 0.8
+      })
+
+      ctx.beginPath()
+      particleSets.forEach(({ x, y }, setI) => {
+        if (setI) {
+          ctx.lineTo(x, y)
+        } else {
+          ctx.moveTo(x, y)
+        }
+      })
+      ctx.stroke()
+      ctx.closePath()
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      update()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Text Flag</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    const text = { angle: 0, rx: 2, ry: 5, size: 12, gap: 14, content: ' Your Text Here' }
+    const chars = [...text.content].map(letter => ({ x: 0, y: 0, letter }))
+
+    function update() {
+      ctx.fillStyle = '#000000'
+      ctx.font = `${text.size}px monospace`
+      text.angle += 0.15
+      for (let i = chars.length - 1; i > -1; i--) {
+        if (i) {
+          chars[i].x = chars[i - 1].x + text.gap
+          chars[i].y = chars[i - 1].y
+        } else {
+          chars[i].x += (pos.x - chars[i].x) / 5 + text.rx * Math.cos(text.angle)
+          chars[i].y += (pos.y - chars[i].y) / 5 + text.ry * Math.sin(text.angle)
+        }
+        ctx.fillText(chars[i].letter, chars[i].x, chars[i].y)
+      }
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      update()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>

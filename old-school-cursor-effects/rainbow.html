@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Rainbow</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    const colors = ['#fe0000', '#fd8c00', '#ffe500', '#119f0b', '#00deff', '#0644b3', '#c22edc']
+    const particles = Array(20).fill(0).map(() => ({ x: 0, y: 0 }))
+    const size = 5
+
+    function update() {
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.lineWidth = size
+
+      const particleSets = []
+      let { x, y } = pos
+
+      particles.forEach((p, i) => {
+        const nextP = particles[i + 1] || particles[0]
+        p.x = x
+        p.y = y
+        particleSets.push({ x, y })
+        x += (nextP.x - x) * 0.4
+        y += (nextP.y - y) * 0.4
+      })
+
+      colors.forEach((color, i) => {
+        ctx.beginPath()
+        ctx.strokeStyle = color
+        particleSets.forEach(({ x, y }, setI) => {
+          if (setI) {
+            ctx.lineTo(x, y + i * size)
+          } else {
+            ctx.moveTo(x, y + i * size)
+          }
+        })
+        ctx.stroke()
+        ctx.closePath()
+      })
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      update()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>

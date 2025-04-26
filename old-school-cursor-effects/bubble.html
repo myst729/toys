@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Bubble</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    const particles = []
+
+    function update() {
+      ctx.fillStyle = '#e6f1f7'
+      ctx.strokeStyle = '#3a92c5'
+
+      particles.forEach((p, i) => {
+        p.x += p.vx
+        p.y += p.vy
+        p.vx += ((Math.random() < 0.5 ? -1 : 1) * 2) / 75
+        p.vy -= Math.random() / 600
+        p.lifeSpan--
+
+        const scale = 0.2 + (p.initialLifeSpan - p.lifeSpan) / p.initialLifeSpan
+
+        ctx.beginPath()
+        ctx.arc(p.x - (p.baseDimension / 2) * scale, p.y - p.baseDimension / 2, p.baseDimension * scale, 0, 2 * Math.PI)
+        ctx.stroke()
+        ctx.fill()
+        ctx.closePath()
+      })
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        if (particles[i].lifeSpan < 0) {
+          particles.splice(i, 1)
+        }
+      }
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      update()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+      const lifeSpan = Math.floor(Math.random() * 60 + 60)
+      particles.push({
+        x: clientX,
+        y: clientY,
+        vx: (Math.random() < 0.5 ? -1 : 1) * (Math.random() / 10),
+        vy: -0.4 + Math.random() * -1,
+        lifeSpan,
+        initialLifeSpan: lifeSpan,
+        baseDimension: 4,
+      })
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>

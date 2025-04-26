@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Clock</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    const dateColor = 'blue'
+    const faceColor = 'black'
+    const secondsColor = 'red'
+    const minutesColor = 'black'
+    const hoursColor = 'black'
+    const del = 0.4
+    const theDays = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']
+    const theMonths = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
+    let date = new Date()
+    let day = date.getDate()
+    let year = date.getFullYear()
+    const dateInWords = ` ${theDays[date.getDay()]} ${day} ${theMonths[date.getMonth()]} ${year}`.split('')
+    const clockNumbers = ['3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '1', '2']
+    const F = clockNumbers.length
+
+    const hourHand = ['•', '•', '•']
+    const minuteHand = ['•', '•', '•', '•'];
+    const secondHand = ['•', '•', '•', '•', '•']
+
+    const siz = 45
+    const eqf = 360 / F
+    const eqd = 360 / dateInWords.length
+    const han = siz / 6.5
+    const ofy = 0
+    const ofx = 0
+    const ofst = 0
+
+    const dy = []
+    const dx = []
+    const zy = []
+    const zx = []
+
+    const tmps = []
+    const tmpm = []
+    const tmph = []
+    const tmpf = []
+    const tmpd = []
+
+    let sum = dateInWords.length + F + hourHand.length + minuteHand.length + secondHand.length + 1
+
+    for (let i = 0; i < sum; i++) {
+      dy[i] = 0
+      dx[i] = 0
+      zy[i] = 0
+      zx[i] = 0
+    }
+    for (let i = 0; i < dateInWords.length; i++) {
+      tmpd[i] = { color: dateColor, value: dateInWords[i] }
+    }
+    for (let i = 0; i < clockNumbers.length; i++) {
+      tmpf[i] = { color: faceColor, value: clockNumbers[i] }
+    }
+    for (let i = 0; i < hourHand.length; i++) {
+      tmph[i] = { color: hoursColor, value: hourHand[i] }
+    }
+    for (let i = 0; i < minuteHand.length; i++) {
+      tmpm[i] = { color: minutesColor, value: minuteHand[i] }
+    }
+    for (let i = 0; i < secondHand.length; i++) {
+      tmps[i] = { color: secondsColor, value: secondHand[i] }
+    }
+
+    function updatePositions() {
+      let widthBuffer = 80
+      zy[0] = Math.round((dy[0] += (pos.y - dy[0]) * del))
+      zx[0] = Math.round((dx[0] += (pos.x - dx[0]) * del))
+      for (let i = 1; i < sum; i++) {
+        zy[i] = Math.round((dy[i] += (zy[i - 1] - dy[i]) * del))
+        zx[i] = Math.round((dx[i] += (zx[i - 1] - dx[i]) * del))
+        if (dy[i - 1] >= height - 80) dy[i - 1] = height - 80
+        if (dx[i - 1] >= width - widthBuffer) dx[i - 1] = width - widthBuffer
+      }
+    }
+
+    function updateParticles() {
+      ctx.font = '10px sans-serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+
+      const time = new Date()
+      const secs = time.getSeconds()
+      const sec = (Math.PI * (secs - 15)) / 30
+      const mins = time.getMinutes()
+      const min = (Math.PI * (mins - 15)) / 30
+      const hrs = time.getHours()
+      const hr = (Math.PI * (hrs - 3)) / 6 + (Math.PI * parseInt(time.getMinutes())) / 360
+
+      for (let i = 0; i < tmpd.length; i++) {
+        tmpd[i].y = dy[i] + siz * 1.5 * Math.sin(-sec + (i * eqd * Math.PI) / 180)
+        tmpd[i].x = dx[i] + siz * 1.5 * Math.cos(-sec + (i * eqd * Math.PI) / 180)
+        ctx.fillStyle = tmpd[i].color
+        ctx.fillText(tmpd[i].value, tmpd[i].x, tmpd[i].y)
+      }
+
+      for (let i = 0; i < tmpf.length; i++) {
+        tmpf[i].y = dy[tmpd.length + i] + siz * Math.sin((i * eqf * Math.PI) / 180)
+        tmpf[i].x = dx[tmpd.length + i] + siz * Math.cos((i * eqf * Math.PI) / 180)
+        ctx.fillStyle = tmpf[i].color
+        ctx.fillText(tmpf[i].value, tmpf[i].x, tmpf[i].y)
+      }
+
+      for (let i = 0; i < tmph.length; i++) {
+        tmph[i].y = dy[tmpd.length + F + i] + ofy + i * han * Math.sin(hr)
+        tmph[i].x = dx[tmpd.length + F + i] + ofx + i * han * Math.cos(hr)
+        ctx.fillStyle = tmph[i].color
+        ctx.fillText(tmph[i].value, tmph[i].x, tmph[i].y)
+      }
+
+      for (let i = 0; i < tmpm.length; i++) {
+        tmpm[i].y = dy[tmpd.length + F + tmph.length + i] + ofy + i * han * Math.sin(min)
+        tmpm[i].x = dx[tmpd.length + F + tmph.length + i] + ofx + i * han * Math.cos(min)
+        ctx.fillStyle = tmpm[i].color
+        ctx.fillText(tmpm[i].value, tmpm[i].x, tmpm[i].y)
+      }
+
+      for (let i = 0; i < tmps.length; i++) {
+        tmps[i].y = dy[tmpd.length + F + tmph.length + tmpm.length + i] + ofy + i * han * Math.sin(sec)
+        tmps[i].x = dx[tmpd.length + F + tmph.length + tmpm.length + i] + ofx + i * han * Math.cos(sec)
+        ctx.fillStyle = tmps[i].color
+        ctx.fillText(tmps[i].value, tmps[i].x, tmps[i].y)
+      }
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      updatePositions()
+      updateParticles()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>

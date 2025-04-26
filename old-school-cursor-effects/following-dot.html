@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Following Dot</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    const dot = { x: 0, y: 0, size: 10, lag: 10 }
+
+    function update() {
+      ctx.fillStyle = '#323232a6'
+      dot.x += (pos.x - dot.x) / dot.lag
+      dot.y += (pos.y - dot.y) / dot.lag
+      ctx.beginPath()
+      ctx.arc(dot.x, dot.y, dot.size, 0, 2 * Math.PI)
+      ctx.fill()
+      ctx.closePath()
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      update()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>

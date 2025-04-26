@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Characters</title>
+</head>
+
+<body style="margin:0">
+  <canvas style="display:block"></canvas>
+  <script>
+    const canvas = document.querySelector('canvas')
+    const width = canvas.width = window.innerWidth
+    const height = canvas.height = window.innerHeight
+    const ctx = canvas.getContext('2d')
+    const pos = { x: 0, y: 0 }
+
+    const chars = 'hello'.split('')
+    const colors = ['#fe0000', '#fd8c00', '#ffe500', '#119f0b', '#00deff', '#0644b3', '#c22edc']
+    const particles = []
+
+    const randomPositiveOrNegativeOne = () => (Math.random() < 0.5 ? -1 : 1)
+    const characterLifeSpanFunction = () => Math.floor(Math.random() * 60 + 80)
+    const initialCharacterVelocityFunction = () => ({
+      vx: randomPositiveOrNegativeOne() * Math.random() * 5,
+      vy: randomPositiveOrNegativeOne() * Math.random() * 5,
+    })
+    const characterVelocityChangeFunctions = {
+      x: () => (Math.random() < 0.5 ? -1 : 1) / 30,
+      y: () => (Math.random() < 0.5 ? -1 : 1) / 15,
+    }
+    const characterScalingFunction = (age, lifeSpan) => Math.max((lifeSpan - age) / lifeSpan * 2, 0)
+    const characterNewRotationDegreesFunction = (age, lifeSpan) => (lifeSpan - age) / 5
+
+    function update() {
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+
+      particles.forEach((p, i) => {
+        p.size *= 0.99
+        p.x += p.vx
+        p.y += p.vy
+        p.lifeSpan--
+        p.age++
+        p.vx += characterVelocityChangeFunctions.x(p.age, p.initialLifeSpan)
+        p.vy += characterVelocityChangeFunctions.y(p.age, p.initialLifeSpan)
+        const scale = characterScalingFunction(p.age, p.initialLifeSpan)
+        const degrees = p.rotationSign * characterNewRotationDegreesFunction(p.age, p.initialLifeSpan)
+        const radians = degrees * 0.0174533
+        // ctx.translate(p.x, p.y)
+        // ctx.rotate(radians)
+        ctx.font = `${p.size}px serif`
+        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)]
+        ctx.fillText(p.char, p.x, p.y)
+        // ctx.rotate(-radians)
+        // ctx.translate(-p.x, -p.y)
+      })
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        if (particles[i].lifeSpan < 0) {
+          particles.splice(i, 1)
+        }
+      }
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height)
+      update()
+      requestAnimationFrame(loop)
+    }
+
+    canvas.addEventListener('mousemove', ({ clientX, clientY }) => {
+      pos.x = clientX
+      pos.y = clientY
+      const lifeSpan = characterLifeSpanFunction()
+      const velocity = initialCharacterVelocityFunction()
+      particles.push({
+        x: clientX,
+        y: clientY,
+        initialLifeSpan: lifeSpan,
+        lifeSpan,
+        age: 0,
+        ...velocity,
+        rotationSign: randomPositiveOrNegativeOne(),
+        char: chars[Math.floor(Math.random() * chars.length)],
+        size: 32,
+      })
+    })
+
+    loop()
+  </script>
+</body>
+
+</html>
