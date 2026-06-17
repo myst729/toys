@@ -7,6 +7,7 @@
 - [clockwise-points-sorting](https://myst729.github.io/toys/clockwise-points-sorting/)
 - [cursor-trail](https://myst729.github.io/toys/cursor-trail/)
 - [favatar](https://myst729.github.io/toys/favatar/)
+- [floyd-steinberg-dithering](https://myst729.github.io/toys/floyd-steinberg-dithering/)
 - [force-js](https://myst729.github.io/toys/force-js/)
 - [fractal](https://myst729.github.io/toys/fractal/)
 - [front-js](https://myst729.github.io/toys/front-js/)
