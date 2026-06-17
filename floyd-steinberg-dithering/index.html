@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floyd Steinberg Dithering</title>
+  <style>
+    body { padding: 0 20px; }
+    label { cursor: pointer; margin-right: 10px; }
+    section { display: flex; flex-wrap: wrap; }
+    div { max-width: 32%; width: fit-content; padding-right: 10px; }
+    canvas { border: 1px solid gray; width: 100%; }
+    section.zoom div { max-width: unset; }
+    section.zoom canvas { width: auto; }
+  </style>
+</head>
+
+<body>
+  <h1>Floyd Steinberg Dithering</h1>
+  <p><strong>Floyd Steinberg Dithering</strong> is an error diffusion algorithm that distributes the quantization error of a pixel to its neighboring pixels. This results in a more visually appealing image when reducing the color depth. In this example, we convert an image to grayscale and then create a dithered version of the image.</p>
+  <label>Choose Image: <input type="file" accept="image/*" id="file"></label>
+  <label>Full Size: <input type="checkbox" id="zoom"></label>
+  <section>
+    <div>
+      <h2>Source Image</h2>
+      <canvas id="source"></canvas>
+    </div>
+    <div>
+      <h2>Grayscale Image</h2>
+      <canvas id="grayscale"></canvas>
+    </div>
+    <div>
+      <h2>Dithered Image</h2>
+      <canvas id="dithered"></canvas>
+    </div>
+  </section>
+  <script>
+    const file = document.querySelector('#file')
+    const zoom = document.querySelector('#zoom')
+    const section = document.querySelector('section')
+    const source = document.querySelector('#source')
+    const sourceCtx = source.getContext('2d')
+    const grayscale = document.querySelector('#grayscale')
+    const grayscaleCtx = grayscale.getContext('2d')
+    const dithered = document.querySelector('#dithered')
+    const ditheredCtx = dithered.getContext('2d')
+    const img = new Image()
+    const reader = new FileReader()
+
+    img.onload = () => {
+      source.width = grayscale.width = dithered.width = img.width
+      source.height = grayscale.height = dithered.height = img.height
+      sourceCtx.drawImage(img, 0, 0)
+      const sourceData = sourceCtx.getImageData(0, 0, img.width, img.height)
+
+      const pixels = new Uint8ClampedArray(img.width * img.height * 4)
+
+      for (let i = 0; i < pixels.length; i += 4) {
+        let r = sourceData.data[i]
+        let g = sourceData.data[i + 1]
+        let b = sourceData.data[i + 2]
+        let gray = 0.299 * r + 0.587 * g + 0.114 * b
+        pixels[i] = pixels[i + 1] = pixels[i + 2] = gray
+        pixels[i + 3] = sourceData.data[i + 3] // 255
+      }
+
+      grayscaleCtx.putImageData(new ImageData(pixels, img.width, img.height), 0, 0)
+
+      for (let i = 0; i < pixels.length; i += 4) {
+        let gray = pixels[i]
+        let value = gray > 128 ? 255 : 0
+        let diff = gray - value
+        pixels[i] = pixels[i + 1] = pixels[i + 2] = value
+
+        if ((i + 8) % (img.width * 4) > 0) {
+          let right = pixels[i + 4] + diff * 7 / 16
+          pixels[i + 4] = pixels[i + 5] = pixels[i + 6] = right
+        }
+
+        if (i + 3 < img.width * (img.height - 1) * 4) {
+          let down = pixels[i + img.width * 4] + diff * 5 / 16
+          pixels[i + img.width * 4] = pixels[i + img.width * 4 + 1] = pixels[i + img.width * 4 + 2] = down
+
+          if (i % (img.width * 4) > 0) {
+            let downLeft = pixels[i + img.width * 4 - 4] + diff * 3 / 16
+            pixels[i + img.width * 4 - 4] = pixels[i + img.width * 4 - 3] = pixels[i + img.width * 4 - 2] = downLeft
+          }
+
+          if ((i + 8) % (img.width * 4) > 0) {
+            let downRight = pixels[i + img.width * 4 + 4] + diff * 1 / 16
+            pixels[i + img.width * 4 + 4] = pixels[i + img.width * 4 + 5] = pixels[i + img.width * 4 + 6] = downRight
+          }
+        }
+      }
+
+      ditheredCtx.putImageData(new ImageData(pixels, img.width, img.height), 0, 0)
+    }
+
+    reader.onload = (e) => {
+      img.src = e.target.result
+    }
+
+    file.onchange = (e) => {
+      const image = e.target.files[0]
+      if (image) {
+        reader.readAsDataURL(image)
+        zoom.checked = false
+        section.classList.remove('zoom')
+      }
+    }
+
+    zoom.onchange = (e) => {
+      const checked = e.target.checked
+      if (checked) {
+        section.classList.add('zoom')
+      } else {
+        section.classList.remove('zoom')
+      }
+    }
+  </script>
+</body>
+</html>
